@@ -1,0 +1,58 @@
+@import url("national-park/national-park.css");
+html {
+    background-color: black;
+    color: white;
+    font-family: National Park;
+}
+
+a {
+    color: lightgray;
+    font-weight: 700;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}
+
+body {
+    margin: auto;
+    width: 980px;
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.title {
+    text-align: center;
+}
+
+.header-menu {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    width: 350px;
+    max-width: 100%;
+    margin: auto;
+    padding-bottom: 10px;
+    border-bottom: 2px solid;
+    border-color: lightgray;
+}
+
+.header-item {
+    flex-grow: 2;
+    text-decoration: none;
+    list-style-type: none;
+}
+    

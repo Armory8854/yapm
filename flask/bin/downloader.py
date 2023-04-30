@@ -7,15 +7,21 @@ def pathCreator(desired_path):
     else:
         print(desired_path, " Exists")
 
+def fileChecker(desired_file):
+    if os.path.isfile(desired_file):
+        print(desired_file + "Exists! moving on...")
+    else:
+        print("Downloading " + desired_file)
+        
 def mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date):
     global file_path
     r = requests.get(episode_link)
     download_path = str(podcast_dir + "/" + podcast_title + "/")
     file_path = download_path + episode_date + "-" + episode_title + ".mp3"
     pathCreator(download_path)
+    fileChecker(file_path)
     if r.status_code == 200:
         with open(file_path, "wb") as f:
-            print(f"Downloading {file_path}...")
             f.write(r.content)
     else:
         print(f"Error downloading {file_path}")

@@ -1,0 +1,8 @@
+/* national-park-variable */
+@font-face {
+	font-family: National Park ;
+	font-style: normal;
+	font-weight: 400;
+	src: local("National Park Variable"), local("NationalPark-Variable"), url(national-park-variable.woff2) format("woff2");
+}
+
