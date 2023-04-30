@@ -3,7 +3,6 @@ from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gathe
 from bin.downloader import pathCreator, mp3Download
 from bin.audioProcessing import speedUpAudio, trimAudio
 
-settings_file = "settings/config.ini"
 db_file = "data/database.db"
 podcast_dir = "/home/celer/Podcasts"
 def main():
