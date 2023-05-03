@@ -1,19 +1,22 @@
 from bin.parser import dictCreation
-from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources
+from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
 from bin.downloader import pathCreator, mp3Download
 from bin.audioProcessing import speedUpAudio, trimAudio
 
 db_file = "data/database.db"
-podcast_dir = "/home/celer/Podcasts"
+
 def main():
+    settings_dict = gatherSettings(db_file)
+    podcast_dir = settings_dict['download_dir']
+    max_downloads = settings_dict['max_downloads']
     urls = gatherPodcastSources(db_file)
-    # Comment this out or have it be some kind of one time run thing for production
     for url in urls:
-        for i in range(0,11):
+        for i in range(0,max_downloads):
             podcast_title, episode_link, episode_title, episode_date, episode_image = dictCreation(url, i)
             insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image)
 
     new_podcasts = downloadSearch(db_file)
+
     for i in range(len(new_podcasts)):
         podcast_title = new_podcasts[i][0]
         episode_title = new_podcasts[i][2]

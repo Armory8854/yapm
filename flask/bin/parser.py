@@ -1,4 +1,4 @@
-from bin.settings import gatherURL
+#from bin.settings import gatherURL
 from datetime import datetime
 from bs4 import BeautifulSoup
 import feedparser
@@ -35,3 +35,28 @@ def dictCreation(url, iteration):
 #        episode_description = htmlPrettyPrint(d['entries'][iteration]['summary'])
     episode_image = d.feed.image['href']
     return podcast_title, episode_link, episode_title, episode_date, episode_image
+
+def indexMetaGathering(urls):
+    global meta_dict
+    # First define ARRAYS / LISTS to insert together later
+    meta_array = []
+    titles = []
+    images = []
+    # Define the final DICT to store all values
+    meta_dict = {}
+    for url in urls:
+        d = feedparser.parse(url)
+        # First gather the VALUES
+        podcast_title = d['feed']['title']
+        podcast_image = d.feed.image['href']
+        # Then, append these to the proper arrays
+        titles.append(podcast_title)
+        images.append(podcast_image)
+    # Finally, add them to the final dict
+    for i in range(len(titles)):
+        meta_dict = {
+            'title':titles[i],
+            'image':images[i]
+        }
+        meta_array.append(meta_dict)
+    return meta_array

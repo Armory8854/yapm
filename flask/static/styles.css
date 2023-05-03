@@ -44,15 +44,40 @@ body {
     flex-direction: row;
     width: 350px;
     max-width: 100%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid;
     border-color: lightgray;
 }
 
 .header-item {
-    flex-grow: 2;
+    flex-grow: 1;
     text-decoration: none;
     list-style-type: none;
 }
     
+.home-grid {
+    width: 800px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    margin: auto;
+}
+
+.home-grid-item {
+    width: 15%;
+    flex: 1;
+}
+
+.podcast-image {
+    width: 100px;
+    max-width: 100%;
+    margin: auto;
+}
+
