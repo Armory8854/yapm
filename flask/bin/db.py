@@ -8,15 +8,9 @@ def executeDB(db_file,command,values=None,):
     if values == None:
         cur.execute(command)
     else:
-        cur.execute(command, values)
+        cur.execute(command, (values))
     con.commit()
     con.close()    
-
-## Establish DB connection
-def getDBConnection():
-    con = sqlite3.connect()
-    con.row_factory = sqlite3.Row
-    return con
 
 ## The init DB for first runs / testing purposes
 def initDB(db_file):
@@ -24,6 +18,7 @@ def initDB(db_file):
     init_podcasts_command = """ CREATE TABLE IF NOT EXISTS podcasts(
         podcast_title TEXT,
         podcast_url TEXT,
+        podcast_image TEXT,
         UNIQUE(podcast_url)
     );"""
     init_episodes_command = """ CREATE TABLE IF NOT EXISTS episodes(
@@ -52,8 +47,6 @@ def initDB(db_file):
         executeDB(db_file, i)
 
     executeDB(db_file, default_settings_command)
-
-
 
 # New Podcast functions #
 ## Search for all podcast URLS to gather as an array
@@ -86,10 +79,20 @@ def podcastDownloaded(db_file, episode_title):
     executeDB(db_file, command_posted, [episode_title])
 
 ## New podcast source
-def newPodcastSource(db_file, podcast_title, new_podcast_source):
-    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url) VALUES (?, ?)"
-    values = podcast_title, new_podcast_source
+def newPodcastSource(db_file, podcast_title, new_podcast_source, podcast_image):
+    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image) VALUES (?, ?, ?)"
+    values = podcast_title, new_podcast_source, podcast_image
     executeDB(db_file, command, values)
+
+## Gather podcast source info from the DB
+def gatherPodcastSources(db_file):
+    global podcast_title, podcast_image
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    podcast_title = cur.execute("SELECT podcast_title FROM podcasts;").fetchall()
+    podcast_image = cur.execute("SELECT podcast_image FROM podcasts;").fetchall()
+    con.close()
+    return podcast_title, podcast_image
 
 # Settings #
 ## Gather all settings as a dictionary for use anywhere
@@ -108,3 +111,8 @@ def gatherSettings(db_file):
 
     return settings_dict
 
+## Udate db, mainly for settings
+def updateDB(db_file, max_downloads, download_all, download_dir):
+    command = "UPDATE settings SET max_downloads=?, download_all=?, download_dir=?"
+    values = max_downloads, download_all, download_dir
+    executeDB(db_file, command, values)

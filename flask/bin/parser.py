@@ -3,7 +3,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import feedparser
 import json
-
+from .db import gatherPodcastSources
 
 def jsonPrettyPrint(data):
     json_object = data
@@ -36,19 +36,19 @@ def dictCreation(url, iteration):
     episode_image = d.feed.image['href']
     return podcast_title, episode_link, episode_title, episode_date, episode_image
 
-def indexMetaGathering(urls):
-    global meta_dict
+def indexMetaGathering(db_file):
+    global meta_array
     # First define ARRAYS / LISTS to insert together later
     meta_array = []
     titles = []
     images = []
-    # Define the final DICT to store all values
+    db_titles, db_images = gatherPodcastSources(db_file)    
+    # Define the DICT to store all values
     meta_dict = {}
-    for url in urls:
-        d = feedparser.parse(url)
+    for i in range(len(db_titles)):
         # First gather the VALUES
-        podcast_title = d['feed']['title']
-        podcast_image = d.feed.image['href']
+        podcast_title = db_titles[i][0]
+        podcast_image = db_images[i][0]
         # Then, append these to the proper arrays
         titles.append(podcast_title)
         images.append(podcast_image)

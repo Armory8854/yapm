@@ -81,3 +81,27 @@ body {
     margin: auto;
 }
 
+.settings-menu {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 200px;
+    max-width: 100%;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 10px;
+ }
+
+.settings-label {
+    margin-right: 10px;
+}
+
+.settings-input {
+    width: 100px;
+    max-width: 100%;
+    margin: auto;
+}
