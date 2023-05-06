@@ -1,4 +1,5 @@
 @import url("national-park/national-park.css");
+
 html {
     background-color: black;
     color: white;
@@ -94,7 +95,7 @@ body {
     justify-content: center;
     align-content: center;
     margin: 10px;
- }
+}
 
 .settings-label {
     margin-right: 10px;
@@ -104,4 +105,17 @@ body {
     width: 100px;
     max-width: 100%;
     margin: auto;
+}
+
+.button-style {
+    width: 150px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    display: block;
+    color: white;
+    background-color: #282828;
+    border-color: lightgray;
+    border-style: solid;
 }

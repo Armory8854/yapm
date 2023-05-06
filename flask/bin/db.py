@@ -49,15 +49,6 @@ def initDB(db_file):
     executeDB(db_file, default_settings_command)
 
 # New Podcast functions #
-## Search for all podcast URLS to gather as an array
-def gatherPodcastSources(db_file):
-    global podcast_sources
-    command = "SELECT podcast_url FROM podcasts;"
-    con = sqlite3.connect(db_file)
-    cur = con.cursor()
-    podcast_sources = [row[0] for row in cur.execute(command).fetchall()]
-    return podcast_sources
-
 ## Inserts new *EPISODES* into the PODCAST table
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image):
     command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, downloaded) VALUES (?, ?, ?, ?, ?, ?)"
@@ -71,6 +62,7 @@ def downloadSearch(db_file):
     con = sqlite3.connect(db_file)
     cur = con.cursor()
     new_episodes = cur.execute(command).fetchall()
+    con.close()
     return new_episodes
 
 ## Updates a podcast as downloaded
@@ -79,7 +71,7 @@ def podcastDownloaded(db_file, episode_title):
     executeDB(db_file, command_posted, [episode_title])
 
 ## New podcast source
-def newPodcastSource(db_file, podcast_title, new_podcast_source, podcast_image):
+def newPodcastSourceDB(db_file, podcast_title, new_podcast_source, podcast_image):
     command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image) VALUES (?, ?, ?)"
     values = podcast_title, new_podcast_source, podcast_image
     executeDB(db_file, command, values)
@@ -91,8 +83,9 @@ def gatherPodcastSources(db_file):
     cur = con.cursor()
     podcast_title = cur.execute("SELECT podcast_title FROM podcasts;").fetchall()
     podcast_image = cur.execute("SELECT podcast_image FROM podcasts;").fetchall()
+    podcast_url = cur.execute("SELECT podcast_url FROM podcasts;").fetchall()
     con.close()
-    return podcast_title, podcast_image
+    return podcast_title, podcast_image, podcast_url
 
 # Settings #
 ## Gather all settings as a dictionary for use anywhere
@@ -108,7 +101,7 @@ def gatherSettings(db_file):
 
     for column in range(len(columns_pre)):
         settings_dict.update({columns_pre[column][1]: rows_pre[0][column]})
-
+    con.close()
     return settings_dict
 
 ## Udate db, mainly for settings

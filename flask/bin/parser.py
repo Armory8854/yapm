@@ -42,7 +42,7 @@ def indexMetaGathering(db_file):
     meta_array = []
     titles = []
     images = []
-    db_titles, db_images = gatherPodcastSources(db_file)    
+    db_titles, db_images, db_url = gatherPodcastSources(db_file)    
     # Define the DICT to store all values
     meta_dict = {}
     for i in range(len(db_titles)):

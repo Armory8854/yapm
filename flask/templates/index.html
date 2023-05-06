@@ -2,6 +2,16 @@
 <html lang="en">
     <body>
       {% include "header.html" %}
+      <button class="button-style" onClick="location.href='/download-new'">Download New Podcasts</button>
+      <button class="button-style" onClick="openDialog()">Add New Podcasts</button>
+      <dialog id="podcast-popup">
+	<form action="/new-source" method="POST">
+	  <label for="podcast-rss-entry">Enter RSS URL:</label>
+	  <input type="text" id="podcastt-rss-entry" name="podcast-rss-entry">
+	  <br>
+	  <button onClick="closeDialog()">Submit</button>
+	</form>
+      </dialog>
       <div class="home-grid">
 	{% for podcast in meta_dict %}
 	<div class="home-grid-item">
@@ -11,4 +21,15 @@
 	{% endfor %}
       </div>
     </body>
+    <script>
+    function openDialog() {
+	var dialog = document.getElementById("podcast-popup");
+	dialog.showModal();
+    }
+
+    function closeDialog() {
+	var dialog = document.getElementById("podcast-popup");
+	dialog.close();
+    }
+    </script>
 </html>

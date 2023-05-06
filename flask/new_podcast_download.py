@@ -3,13 +3,13 @@ from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gathe
 from bin.downloader import pathCreator, mp3Download
 from bin.audioProcessing import speedUpAudio, trimAudio
 
-db_file = "data/database.db"
-
-def main():
+def newPodcastDownload(db_file):
     settings_dict = gatherSettings(db_file)
     podcast_dir = settings_dict['download_dir']
     max_downloads = settings_dict['max_downloads']
-    urls = gatherPodcastSources(db_file)
+    urls_dirty = gatherPodcastSources(db_file)[2]
+    urls = [x[0] for x in urls_dirty]
+    print(urls)
     for url in urls:
         for i in range(0,max_downloads):
             podcast_title, episode_link, episode_title, episode_date, episode_image = dictCreation(url, i)
@@ -27,7 +27,4 @@ def main():
 
     new_podcasts = downloadSearch(db_file)
     print("New Podcasts Left: ", str(len(new_podcasts)))
- 
-    
-if __name__ == "__main__":
-    main()
+
