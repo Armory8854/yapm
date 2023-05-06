@@ -23,7 +23,7 @@ def newPodcastDownload(db_file):
         episode_link = new_podcasts[i][1]
         episode_date = new_podcasts[i][3]
         file_path = mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date)
-        podcastDownloaded(db_file, episode_title)
+        podcastDownloaded(db_file, episode_title, file_path)
 
     new_podcasts = downloadSearch(db_file)
     print("New Podcasts Left: ", str(len(new_podcasts)))

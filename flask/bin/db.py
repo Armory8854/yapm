@@ -27,6 +27,7 @@ def initDB(db_file):
         episode_title TEXT,
         episode_date TEXT,
         episode_image TEXT,
+        download_dir TEXT,
         downloaded INTEGER,
         UNIQUE(episode_title),
         FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
@@ -66,9 +67,10 @@ def downloadSearch(db_file):
     return new_episodes
 
 ## Updates a podcast as downloaded
-def podcastDownloaded(db_file, episode_title):
-    command_posted = "UPDATE episodes SET downloaded=1 WHERE episode_title=?"
-    executeDB(db_file, command_posted, [episode_title])
+def podcastDownloaded(db_file, episode_title, download_dir):
+    command_posted = "UPDATE episodes SET downloaded=?, download_dir=? WHERE episode_title=?"
+    values = "1", download_dir, episode_title
+    executeDB(db_file, command_posted, values)
 
 ## New podcast source
 def newPodcastSourceDB(db_file, podcast_title, new_podcast_source, podcast_image):
