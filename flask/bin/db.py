@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 
 # General DB Functions, mainly executeDB #
 ## Generic sql query function
@@ -14,6 +15,9 @@ def executeDB(db_file,command,values=None,):
 
 ## The init DB for first runs / testing purposes
 def initDB(db_file):
+    data_path = Path("./data")
+    data_path.mkdir(parents=True, exist_ok=True)
+    Path(db_file).touch(exist_ok=True)
     clear_tables = [ "episodes", "podcasts", "settings" ]
     init_podcasts_command = """ CREATE TABLE IF NOT EXISTS podcasts(
         podcast_title TEXT,
@@ -95,6 +99,15 @@ def gatherPodcastSources(db_file):
     con.close()
     return podcast_title, podcast_image, podcast_url
 
+def gatherDownloadedPodcasts(db_file):
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command = "SELECT * FROM episodes WHERE downloaded=1;"
+    cur.execute(command)
+    downloaded_podcasts = cur.fetchall()
+    con.close()
+    return downloaded_podcasts
+    
 # Settings #
 ## Gather all settings as a dictionary for use anywhere
 def gatherSettings(db_file):

@@ -1,3 +1,4 @@
+/* General CSS for all pages */
 @import url("national-park/national-park.css");
 
 html {
@@ -58,7 +59,8 @@ body {
     text-decoration: none;
     list-style-type: none;
 }
-    
+
+/* Homepage CSS */
 .home-grid {
     width: 800px;
     max-width: 100%;
@@ -118,4 +120,17 @@ body {
     background-color: #282828;
     border-color: lightgray;
     border-style: solid;
+}
+
+/* AMPLITUDE JS css */
+.media-player-container {
+    width: 500px;
+    max-width: 100%;
+    margin: auto;
+}
+
+.album-art {
+    width: 200px;
+    max-width: 100%;
+    display: block;
 }

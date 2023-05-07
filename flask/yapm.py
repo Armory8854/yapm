@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
 from new_podcast_download import newPodcastDownload
 from new_podcast_source import newPodcastSource
-from bin.db import gatherPodcastSources, gatherSettings, updateDB
+from bin.db import gatherPodcastSources, gatherSettings, updateDB, gatherDownloadedPodcasts
 from bin.parser import indexMetaGathering
 
 app = Flask(__name__, static_url_path='/static', static_folder = 'static')
@@ -20,6 +20,13 @@ def settings(name=None):
     print(settings_dict)
     css_url = url_for('static', filename='styles.css')
     return render_template('settings.html', name=name, css_url=css_url, settings=settings_dict)
+
+@app.route("/podcasts")
+def podcasts(name=None):
+    downloaded_podcasts = gatherDownloadedPodcasts(db_file)
+    css_url = url_for('static', filename='styles.css')
+    print(downloaded_podcasts)
+    return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url)
 
 @app.route("/settings-update", methods=[ 'POST' ])
 def settings_update(name=None):
