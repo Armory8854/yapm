@@ -1,4 +1,4 @@
-from bin.parser import dictCreation
+from bin.parser import dictCreation, sanitizeNames
 from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
 from bin.downloader import pathCreator, mp3Download
 from bin.audioProcessing import speedUpAudio, trimAudio
@@ -20,9 +20,11 @@ def newPodcastDownload(db_file):
     for i in range(len(new_podcasts)):
         podcast_title = new_podcasts[i][0]
         episode_title = new_podcasts[i][2]
+        print(episode_title)
         episode_link = new_podcasts[i][1]
         episode_date = new_podcasts[i][3]
-        file_path = mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date)
+        file_path = str(podcast_dir + "/" + podcast_title + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
+        mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date)
         podcastDownloaded(db_file, episode_title, file_path)
 
     new_podcasts = downloadSearch(db_file)

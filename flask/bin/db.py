@@ -8,7 +8,7 @@ def executeDB(db_file,command,values=None,):
     if values == None:
         cur.execute(command)
     else:
-        cur.execute(command, (values))
+        cur.execute(command, values)
     con.commit()
     con.close()    
 
@@ -54,7 +54,7 @@ def initDB(db_file):
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image):
     command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, downloaded) VALUES (?, ?, ?, ?, ?, ?)"
     values = podcast_title, episode_link, episode_title, episode_date, episode_image, "0"
-    executeDB(db_file, command, values)
+    executeDB(db_file, command, (values))
 
 ## Checks for new possible downloads    
 def downloadSearch(db_file):
@@ -68,15 +68,21 @@ def downloadSearch(db_file):
 
 ## Updates a podcast as downloaded
 def podcastDownloaded(db_file, episode_title, download_dir):
-    command_posted = "UPDATE episodes SET downloaded=?, download_dir=? WHERE episode_title=?"
-    values = "1", download_dir, episode_title
-    executeDB(db_file, command_posted, values)
-
+    episode_title=str(episode_title)
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command_downloaded = "UPDATE episodes SET downloaded=1 WHERE episode_title=?"
+    command_directory = "UPDATE episodes SET download_dir=? WHERE episode_title=?"
+    cur.execute(command_downloaded, (episode_title,))
+    cur.execute(command_directory, (download_dir, episode_title,))
+    con.commit()
+    con.close()
+    
 ## New podcast source
 def newPodcastSourceDB(db_file, podcast_title, new_podcast_source, podcast_image):
     command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image) VALUES (?, ?, ?)"
     values = podcast_title, new_podcast_source, podcast_image
-    executeDB(db_file, command, values)
+    executeDB(db_file, command, (values))
 
 ## Gather podcast source info from the DB
 def gatherPodcastSources(db_file):
@@ -110,4 +116,4 @@ def gatherSettings(db_file):
 def updateDB(db_file, max_downloads, download_all, download_dir):
     command = "UPDATE settings SET max_downloads=?, download_all=?, download_dir=?"
     values = max_downloads, download_all, download_dir
-    executeDB(db_file, command, values)
+    executeDB(db_file, command, (values))

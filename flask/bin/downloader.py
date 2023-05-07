@@ -1,5 +1,6 @@
 import requests
 import os
+from .parser import sanitizeNames
 
 def pathCreator(desired_path):
     if not os.path.exists(desired_path):
@@ -8,7 +9,6 @@ def pathCreator(desired_path):
         print(desired_path, " Exists")
 
 def fileChecker(desired_file):
-    global file_exists
     if os.path.isfile(desired_file):
         file_exists=True
     else:
@@ -16,18 +16,16 @@ def fileChecker(desired_file):
     return file_exists
         
 def mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date):
-    global file_path
     r = requests.get(episode_link)
+    episode_title = sanitizeNames(episode_title)
     download_path = str(podcast_dir + "/" + podcast_title + "/")
     file_path = download_path + episode_date + "-" + episode_title + ".mp3"
     pathCreator(download_path)
-    file_exists = fileChecker(file_path)
-    if file_exists == False:
-        if r.status_code == 200:
-            with open(file_path, "wb") as f:
-                f.write(r.content)
-        else:
-            print(f"Error downloading {file_path}")
+#    file_exists = fileChecker(file_path)
+#    if file_exists == False:
+    if r.status_code == 200:
+        with open(file_path, "wb") as f:
+            f.write(r.content)
     else:
         print("Episode already downloaded! Moving on...")
 

@@ -3,6 +3,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import feedparser
 import json
+import re
 from .db import gatherPodcastSources
 
 def jsonPrettyPrint(data):
@@ -27,7 +28,6 @@ def dictCreation(url, iteration):
     global podcast_dict
     podcast_dict = {}
     d = feedparser.parse(url)
-    global podcast_title, episode_link, episode_title, episode_date, episode_image
     podcast_title = d['feed']['title']
     episode_link = d.entries[iteration].enclosures[0]['href']
     episode_title = d['entries'][iteration]['title']
@@ -60,3 +60,10 @@ def indexMetaGathering(db_file):
         }
         meta_array.append(meta_dict)
     return meta_array
+
+def sanitizeNames(podcast_title):
+    sanitized = podcast_title.replace("?","")
+    sanitized = podcast_title.replace("/","-")
+    sanitized = podcast_title.replace(":","-")
+    print(sanitized)
+    return sanitized
