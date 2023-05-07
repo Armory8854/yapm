@@ -20,7 +20,6 @@ def newPodcastDownload(db_file):
     for i in range(len(new_podcasts)):
         podcast_title = new_podcasts[i][0]
         episode_title = new_podcasts[i][2]
-        print(episode_title)
         episode_link = new_podcasts[i][1]
         episode_date = new_podcasts[i][3]
         file_path = str(podcast_dir + "/" + podcast_title + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")

@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 from .parser import sanitizeNames
 
 def pathCreator(desired_path):
@@ -16,17 +17,27 @@ def fileChecker(desired_file):
     return file_exists
         
 def mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date):
-    r = requests.get(episode_link)
+    retries = 0
+    max_retries = 3
+    retry_delay = 10
     episode_title = sanitizeNames(episode_title)
     download_path = str(podcast_dir + "/" + podcast_title + "/")
     file_path = download_path + episode_date + "-" + episode_title + ".mp3"
     pathCreator(download_path)
-#    file_exists = fileChecker(file_path)
-#    if file_exists == False:
-    if r.status_code == 200:
-        with open(file_path, "wb") as f:
-            f.write(r.content)
-    else:
-        print("Episode already downloaded! Moving on...")
-
-    return file_path
+    while retries < max_retries:
+        try:
+            r = requests.get(episode_link)
+            file_exists = fileChecker(file_path)
+            if r.status_code == 200:
+                with open(file_path, "wb") as f:
+                    f.write(r.content)
+                return file_path
+            else:
+                print("Error, retrying......")
+        except requests.exceptions.RequestException as e:
+            print(f"Connection error: {e}. Retrying...")
+        retries += 1
+        time.sleep(retry_delay)
+    print(f"Failed to download {episode_link} after {max_retries} retries.")
+    return None
+            
