@@ -3,43 +3,39 @@
     <body>
       {% include "header.html" %}
       <div class="media-player-container">
-	<div id="amplitude-player">
-	  <div id="amplitude-left">
-	    <img data-amplitude-song-info="cover_art_url" class="album-art"/>
-	    <div class="amplitude-visualitzation" id="large-visualization">
-	    </div>
-	    <div id="player-left-bottom">
-	      <div id="time-container">
-		<span class="current-time">
-		  <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
-		</span>
-	      </div>
-	      <div id="progress-container">
-		<div class="amplitude-wave-form">
-		</div>
-		<input type="range" class="amplitude-song-slider"/>
-		<progress id="song-played-progress" class="amplitude-song-played-progress">
-		</progress>
-		<progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0">
-		</progress>
-	      </div>
+	<div id="player-left-column">
+	  <div id="player-left-top">
+	    <img id="song-image" src="" alt="Song Cover Art">
+	    <h2 id="song-title"></h2>
+	  </div>
+	  <div id="player-left-bottom">
+	    <button class="button-style" onclick="playPrevious()">Previous</button>
+	    <!--<button onclick="playCurrentSong()">Play/Pause</button>-->
+	    <button class="button-style" onclick="playButton()">Play</button>
+	    <button class="button-style" onClick="pauseButton()">Pause</button>
+	    <button class="button-style" onclick="playNext()">Next</button>
+	  </div>
+	</div>
+	<div id="player-right-column">
+	  <div id="playlist">
+	    <div id="song-list"></div>
 	  </div>
 	</div>
       </div>
       <script>
-          Amplitude.init({
-	  songs: [
+	var songs = [
 	    {% for podcast in podcasts %}
 	    {
-	      "name": "{{ podcast[2] }}",
-	      "artist": "{{ podcast[0] }}",
-	      "album": "{{ podcast[0] }}",
-	      "url": "{{ podcast[1]}}",
-	      "cover_art_url": "{{ podcast[4] }}"
+		"name": "{{ podcast[2] }}",
+		"artist": "{{ podcast[0] }}",
+		"album": "{{ podcast[0] }}",
+		"url": "{{ podcast[1]}}",
+		"cover_art_url": "{{ podcast[4] }}",
+		"date": "{{ podcast[3] }}"
 	    }{% if not loop.last %},{% endif %}
 	    {% endfor %}
-	  ]
-	  });
-	</script>
+	];
+      </script>
+      <script src="{{ media_player_url }}"></script>
     </body>
 </html>

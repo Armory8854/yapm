@@ -25,8 +25,9 @@ def settings(name=None):
 def podcasts(name=None):
     downloaded_podcasts = gatherDownloadedPodcasts(db_file)
     css_url = url_for('static', filename='styles.css')
+    media_player_url = url_for('static', filename='js/media-player.js')
     print(downloaded_podcasts)
-    return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url)
+    return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url, media_player_url=media_player_url)
 
 @app.route("/settings-update", methods=[ 'POST' ])
 def settings_update(name=None):

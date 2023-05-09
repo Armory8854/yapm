@@ -122,15 +122,36 @@ body {
     border-style: solid;
 }
 
-/* AMPLITUDE JS css */
+/* MEDIA PLAYER JS css */
 .media-player-container {
-    width: 500px;
+    width: 768px;
     max-width: 100%;
     margin: auto;
+    display: flex;
 }
 
-.album-art {
+#player-left-column {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+#player-left-bottom {
+    display: flex;
+    flex-direction: row;
+}
+
+#song-image {
     width: 200px;
     max-width: 100%;
     display: block;
+    margin: auto;
 }
+
+#player-right-column {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+
