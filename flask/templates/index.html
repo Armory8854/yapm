@@ -16,7 +16,7 @@
 	{% for podcast in meta_dict %}
 	<div class="home-grid-item">
 	  <img class="podcast-image" src="{{ podcast.image }}">
-	  <p class="podcast-title">{{ podcast.title }}</p>
+	  <p class="podcast-title"><a href="podcasts?podcast={{ podcast.title }}">{{ podcast.title }}</a></p>
 	</div>
 	{% endfor %}
       </div>

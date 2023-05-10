@@ -125,6 +125,7 @@ body {
 /* MEDIA PLAYER JS css */
 .media-player-container {
     width: 768px;
+    height: 350px;
     max-width: 100%;
     margin: auto;
     display: flex;
@@ -134,6 +135,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 50%;
+    padding-right: 20px;
 }
 
 #player-left-bottom {
@@ -148,10 +150,58 @@ body {
     margin: auto;
 }
 
+.song {
+    display: flex;
+}
+
+.artist {
+    padding-right: 10px;
+}
+
+.details {
+    width: 250px;
+}
+
 #player-right-column {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    overflow-y: scroll;
 }
 
+#progress-bar {
+  width: 100%;
+  height: 5px;
+  background-color: #ddd;
+}
 
+#progress {
+  height: 100%;
+  background-color: #ff0000;
+  width: 0%;
+}
+
+#now-playing {
+    background: #282828;
+}
+
+@media (max-width: 978px) {
+  .media-player-container {
+    flex-wrap: wrap;
+  }
+
+  #player-left-column {
+      display: block;
+      width: 80%;
+      max-width: 100%
+      padding: 20px;
+      margin: auto;
+      text-align: center;
+  }
+  #player-right-column {
+      display: block;
+      width: 80%;
+      max-width: 100%;
+      margin: auto;
+      text-align: center;
+  }
+}

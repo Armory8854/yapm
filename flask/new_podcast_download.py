@@ -13,6 +13,7 @@ def newPodcastDownload(db_file):
     for url in urls:
         for i in range(0,max_downloads):
             podcast_title, episode_link, episode_title, episode_date, episode_image = dictCreation(url, i)
+            print(podcast_title, episode_link, episode_title, episode_date, episode_image)
             insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image)
 
     new_podcasts = downloadSearch(db_file)
