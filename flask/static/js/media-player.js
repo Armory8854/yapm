@@ -1,4 +1,3 @@
-var playlist = [];
 var currentSong = 0;
 var isPlaying = false;
 var playbackPosition = 0;
@@ -6,8 +5,16 @@ var songList = document.getElementById('song-list');
 var urlParams = new URLSearchParams(window.location.search);
 var podcast = urlParams.get('podcast');
 var podcast = podcast.replace('%20',' ');
+var speedSelect = document.getElementById('speed-select');
 
-console.log(podcast)
+speedSelect.addEventListener('change', function() {
+  var selectedSpeed = parseFloat(speedSelect.value);
+  changePlaybackSpeed(selectedSpeed);
+});
+
+function changePlaybackSpeed(speed) {
+  player.rate(speed);
+}
 
 if (podcast) {
   filteredSongs = songs.filter(function(song) {
@@ -93,6 +100,7 @@ function playPrevious() {
 function playSong(songIndex) {
     currentSong = songIndex;
     playCurrentSong(playbackPosition);
+    speedSelect.value = '1';
 }
 
 function playCurrentSong(playbackPosition) {
@@ -104,7 +112,8 @@ function playCurrentSong(playbackPosition) {
 	onload: function() {
 	    updateMetadata();
 	    if (!player.playing()) {
-		player.play(); // Start playing the new song if it's not already playing
+		player.play();
+		player.rate(1);
 	    }
 	},
 	onplay: function() {

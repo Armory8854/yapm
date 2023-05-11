@@ -15,17 +15,19 @@ def executeDB(db_file,command,values=None,):
 
 ## The init DB for first runs / testing purposes
 def initDB(db_file):
+    print("DB INIT STARTED")
     data_path = Path("./data")
     data_path.mkdir(parents=True, exist_ok=True)
-    Path(db_file).touch(exist_ok=True)
-    clear_tables = [ "episodes", "podcasts", "settings" ]
-    init_podcasts_command = """ CREATE TABLE IF NOT EXISTS podcasts(
+    db_path = Path(db_file)
+    if not db_path.exists():
+        clear_tables = [ "episodes", "podcasts", "settings" ]
+        init_podcasts_command = """ CREATE TABLE IF NOT EXISTS podcasts(
         podcast_title TEXT,
         podcast_url TEXT,
         podcast_image TEXT,
         UNIQUE(podcast_url)
-    );"""
-    init_episodes_command = """ CREATE TABLE IF NOT EXISTS episodes(
+        );"""
+        init_episodes_command = """ CREATE TABLE IF NOT EXISTS episodes(
         podcast_title TEXT,
         episode_link TEXT,
         episode_title TEXT,
@@ -35,23 +37,25 @@ def initDB(db_file):
         downloaded INTEGER,
         UNIQUE(episode_title),
         FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
-    );"""
-    init_settings_command = """ CREATE TABLE IF NOT EXISTS settings(
+        );"""
+        init_settings_command = """ CREATE TABLE IF NOT EXISTS settings(
         max_downloads INT,
         download_all INT,
         download_dir STR
-    );"""
-    default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(10,0,'/home/celer/Podcasts');"
-    init_commands = init_podcasts_command, init_episodes_command, init_settings_command
+        );"""
+        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(10,0,'/Podcasts');"
+        init_commands = init_podcasts_command, init_episodes_command, init_settings_command
 
-    for i in clear_tables:
-        clear_command = "DROP TABLE IF EXISTS " + i + ";"
-        executeDB(db_file, clear_command)
+        for i in clear_tables:
+            clear_command = "DROP TABLE IF EXISTS " + i + ";"
+            executeDB(db_file, clear_command)
 
-    for i in init_commands:
-        executeDB(db_file, i)
+        for i in init_commands:
+            executeDB(db_file, i)
 
-    executeDB(db_file, default_settings_command)
+        executeDB(db_file, default_settings_command)
+    else:
+        print("DB ALREADY EXISTS")
 
 # New Podcast functions #
 ## Inserts new *EPISODES* into the PODCAST table

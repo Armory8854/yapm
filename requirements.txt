@@ -1,0 +1,6 @@
+feedparser
+requests
+flask
+gunicorn
+schedule
+beautifulsoup4
