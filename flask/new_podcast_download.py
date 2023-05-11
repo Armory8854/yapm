@@ -1,7 +1,6 @@
 from bin.parser import dictCreation, sanitizeNames
 from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
 from bin.downloader import pathCreator, mp3Download
-from bin.audioProcessing import speedUpAudio, trimAudio
 
 def newPodcastDownload(db_file):
     settings_dict = gatherSettings(db_file)

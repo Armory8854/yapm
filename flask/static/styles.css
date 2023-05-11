@@ -218,6 +218,10 @@ body {
       text-align: center;
   }
 
+  #song-title {
+      font-size: 18px;
+  }
+  
   #player-left-bottom {
       flex-wrap: wrap;
   }
