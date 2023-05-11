@@ -25,7 +25,8 @@ Finally, run it
 ```
 $ podman run -p 8000:8000 \
   --volume /path/to/podcast/downloads:/Podcasts:rw \
-  --volume /path/to/data:/app/data:rw
+  --volume /path/to/data:/app/data:rw \
+  localhost/yapm:latest
 ```
 
 ## Virtual Environment
