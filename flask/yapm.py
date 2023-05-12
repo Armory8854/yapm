@@ -47,7 +47,15 @@ def create_app():
 
     @app.route("/download-new")
     def download_new(name=None):
-        newPodcastDownload(db_file)
+        attempts = 0
+        while attempts < 3:
+            try:
+                newPodcastDownload(db_file)
+                break
+            except KeyError:
+                attempts += 1
+                print("Key error occured - let's try again")
+                
         return redirect(url_for('index'))
 
     @app.route("/new-source",methods=['POST'])

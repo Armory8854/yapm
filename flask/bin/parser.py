@@ -26,16 +26,17 @@ def dateParser(date):
     
 def dictCreation(url, iteration):
     global podcast_dict
+    attempts = 0
     podcast_dict = {}
     d = feedparser.parse(url)
     podcast_title = d['feed']['title']
     episode_link = d.entries[iteration].enclosures[0]['href']
     episode_title = d['entries'][iteration]['title']
     episode_date = dateParser(d['entries'][iteration]['published'])
-#        episode_description = htmlPrettyPrint(d['entries'][iteration]['summary'])
     episode_image = d.feed.image['href']
-    return podcast_title, episode_link, episode_title, episode_date, episode_image
 
+    return podcast_title, episode_link, episode_title, episode_date, episode_image
+    
 def indexMetaGathering(db_file):
     global meta_array
     # First define ARRAYS / LISTS to insert together later
