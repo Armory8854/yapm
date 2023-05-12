@@ -1,4 +1,4 @@
-from .parser import dictCreation, sanitizeNames
+from .parser import dictCreation, sanitizeNames, urlPagination
 from .db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
 from .downloader import pathCreator, mp3Download
 
@@ -11,7 +11,8 @@ def newPodcastDownload(db_file):
     urls_dirty = gatherPodcastSources(db_file)[2]
     urls = [x[0] for x in urls_dirty]
     for url in urls:
-        for i in range(0,max_downloads):
+        entries = urlPagination(db_file, url)
+        for i in entries: 
             podcast_title, episode_link, episode_title, episode_date, episode_image = dictCreation(url, i)
             insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image)
 
