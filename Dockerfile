@@ -12,4 +12,4 @@ WORKDIR /app
 
 EXPOSE 8000
 
-CMD ["gunicorn", "-c", "gunicorn_config.py", "wsgi:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--worker-class", "gevent", "--log-level", "info", "wsgi:app"]

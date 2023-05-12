@@ -8,6 +8,7 @@
       python310Packages.flask
       python310Packages.gunicorn
       python310Packages.schedule
+      python310Packages.gevent
       sqlite
     ];
 }
