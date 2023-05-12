@@ -1,8 +1,8 @@
 import schedule
 import time
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
-from new_podcast_download import newPodcastDownload
-from new_podcast_source import newPodcastSource
+from bin.new_podcast_download import newPodcastDownload
+from bin.new_podcast_source import newPodcastSource
 from bin.db import initDB, gatherPodcastSources, gatherSettings, updateDB, gatherDownloadedPodcasts
 from bin.parser import indexMetaGathering
 

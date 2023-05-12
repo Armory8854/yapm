@@ -1,6 +1,6 @@
-from bin.parser import dictCreation, sanitizeNames
-from bin.db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
-from bin.downloader import pathCreator, mp3Download
+from .parser import dictCreation, sanitizeNames
+from .db import initDB, insertEntry, downloadSearch, podcastDownloaded, gatherPodcastSources, gatherSettings
+from .downloader import pathCreator, mp3Download
 
 attempts = 0
 

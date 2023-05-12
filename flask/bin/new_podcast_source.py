@@ -1,5 +1,5 @@
-from bin.parser import dictCreation
-from bin.db import initDB, newPodcastSourceDB
+from .parser import dictCreation
+from .db import initDB, newPodcastSourceDB
 
 def newPodcastSource(db_file, new_podcast_source):
     podcast_title = dictCreation(new_podcast_source, 0)[0]
