@@ -11,10 +11,13 @@ def newPodcastDownload(db_file):
     urls_dirty = gatherPodcastSources(db_file)[2]
     urls = [x[0] for x in urls_dirty]
     for url in urls:
-        entries = urlPagination(db_file, url)
-        for i in entries: 
-            podcast_title, episode_link, episode_title, episode_date, episode_image = dictCreation(url, i)
-            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image)
+        values = urlPagination(db_file, url)
+        entries = values[0]
+        podcast_title = values[1]
+        podcast_image = values[2]
+        for i, entry in enumerate(entries): 
+            episode_link, episode_title, episode_date = dictCreation(entry, i)
+            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image) 
 
     new_podcasts = downloadSearch(db_file)
 

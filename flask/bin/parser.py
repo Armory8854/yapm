@@ -22,25 +22,25 @@ def dateParser(date):
     parsed_date = date_obj.strftime('%Y-%m-%d')
     return parsed_date
 
-def urlPagination(db_file, url, page_size = 10, page_number = 1):
+def urlPagination(db_file, url, page_size=10, page_number=1):
     settings_dict = gatherSettings(db_file)
     max_downloads = settings_dict['max_downloads']
     d = feedparser.parse(url)
+    podcast_title = d['feed']['title']
+    podcast_image = d.feed.image['href']
     start_index = (page_number - 1) * page_size
     end_index = start_index + page_size
-    entries = d.entries[start_index:max_downloads]
-    entries = json.loads(entries)
-    print(entries)
-    return entries
+    entries = d.entries[start_index:end_index]
+    return entries, podcast_title, podcast_image
 
-def dictCreation(entries, iteration):
-    print(entries[0]['title'])
-    podcast_title = entries['title']
-    episode_link = d.entries[iteration].enclosures[0]['href']
-    episode_title = d['entries'][iteration]['title']
-    episode_date = dateParser(d['entries'][iteration]['published'])
-    episode_image = d.feed.image['href']
-    return podcast_title, episode_link, episode_title, episode_date, episode_image
+def dictCreation(entry, iteration):
+    episode_link = entry['links'][1]['href']
+    print(episode_link)
+    episode_title = entry['title']
+    print(episode_title)
+    episode_date = dateParser(entry['published'])
+    print(episode_date)
+    return episode_link, episode_title, episode_date
     
 def indexMetaGathering(db_file):
     # First define ARRAYS / LISTS to insert together later

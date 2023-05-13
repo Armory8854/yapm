@@ -62,7 +62,7 @@ def initDB(db_file):
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image):
     command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, downloaded) VALUES (?, ?, ?, ?, ?, ?)"
     values = podcast_title, episode_link, episode_title, episode_date, episode_image, "0"
-    executeDB(db_file, command, (values))
+    executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    
 def downloadSearch(db_file):
