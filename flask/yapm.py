@@ -1,9 +1,9 @@
 import schedule
 import time
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
-from bin.new_podcast_download import newPodcastDownload, newPodcastDLDB, newPodcastDLInputs
+from bin.new_podcast_download import newPodcastDownload
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded
+from bin.db import initDB, gatherPodcastSources, gatherSettings, updateDB, gatherDownloadedPodcasts
 from bin.parser import indexMetaGathering
 
 def create_app():
@@ -48,27 +48,14 @@ def create_app():
     @app.route("/download-new")
     def download_new(name=None):
         attempts = 0
-        start_time = time.time()
         while attempts < 3:
             try:
-                dl_inputs = newPodcastDLInputs(db_file)
-                settings_dict = dl_inputs[0]
-                urls_dirty = dl_inputs[1]
-                db_inputs = newPodcastDLDB(db_file, settings_dict, urls_dirty)
-                podcast_dir = db_inputs[0]
-                new_podcasts = db_inputs[1]
-                for i in range(len(new_podcasts)):
-                    downloaded_new = newPodcastDownload(new_podcasts, podcast_dir, i)
-                    episode_title = downloaded_new[0]
-                    file_path = downloaded_new[1]
-                    podcastDownloaded(db_file, episode_title, file_path)
+                newPodcastDownload(db_file)
                 break
             except KeyError:
                 attempts += 1
                 print("Key error occured - let's try again")
-        end_time = time.time()
-        duration = end_time - start_time
-        print("Duration: " + str(duration)) 
+                
         return redirect(url_for('index'))
 
     @app.route("/new-source",methods=['POST'])
