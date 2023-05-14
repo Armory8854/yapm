@@ -22,9 +22,10 @@ def dateParser(date):
     parsed_date = date_obj.strftime('%Y-%m-%d')
     return parsed_date
 
-def urlPagination(db_file, url, page_size=10, page_number=1):
+def urlPagination(db_file, url, max_download_size, page_number=1):
     settings_dict = gatherSettings(db_file)
     max_downloads = settings_dict['max_downloads']
+    page_size = max_downloads
     d = feedparser.parse(url)
     podcast_title = d['feed']['title']
     podcast_image = d.feed.image['href']
