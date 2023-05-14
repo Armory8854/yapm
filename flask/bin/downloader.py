@@ -15,7 +15,7 @@ def fileChecker(desired_file):
     else:
         file_exists=False
     return file_exists
-        
+
 def mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date):
     retries = 0
     max_retries = 3
