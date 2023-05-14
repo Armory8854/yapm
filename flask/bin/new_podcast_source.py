@@ -1,8 +1,10 @@
-from .parser import dictCreation, urlPagination
-from .db import initDB, newPodcastSourceDB
+from .parser import urlPagination
+from .db import newPodcastSourceDB, gatherSettings
 
 def newPodcastSource(db_file, new_podcast_source):
-    values = urlPagination(db_file, new_podcast_source)
+    settings_dict = gatherSettings(db_file)
+    max_downloads = settings_dict['max_downloads']
+    values = urlPagination(db_file, new_podcast_source, max_downloads)
     entries = values[0]
     podcast_title = values[1]
     podcast_image = values[2]
