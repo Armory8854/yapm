@@ -6,6 +6,7 @@ var urlParams = new URLSearchParams(window.location.search);
 var podcast = urlParams.get('podcast');
 var podcast = podcast.replace('%20',' ');
 var speedSelect = document.getElementById('speed-select');
+var podcastDescription = document.getElementById('description-full-text')
 
 speedSelect.addEventListener('change', function() {
   var selectedSpeed = parseFloat(speedSelect.value);
@@ -57,7 +58,7 @@ function nowPlaying() {
     var now_playing_div = document.getElementById("now-playing");
     var click_event = event.currentTarget;
     if (now_playing_div) {
-	now_playing_div.removeAttribute('id');
+    	now_playing_div.removeAttribute('id');
     };
     click_event.id = 'now-playing';
 }; 
@@ -73,6 +74,7 @@ function updateMetadata() {
   var currentSongData = filteredSongs[currentSong];
   document.getElementById('song-title').textContent = currentSongData.name;
   document.getElementById('song-image').src = currentSongData.cover_art_url;
+  podcastDescription.textContent = currentSongData.description;
 };
 
 function updateProgressBar() {

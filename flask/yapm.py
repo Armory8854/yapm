@@ -31,6 +31,7 @@ def create_app():
     @app.route("/podcasts")
     def podcasts(name=None):
         downloaded_podcasts = gatherDownloadedPodcasts(db_file)
+        print(downloaded_podcasts)
         css_url = url_for('static', filename='styles.css')
         media_player_url = url_for('static', filename='js/media-player.js')
         print(downloaded_podcasts)

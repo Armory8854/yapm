@@ -27,7 +27,11 @@
 	    <div id="song-list"></div>
 	  </div>
 	</div>
-      </div>
+</div>
+<div id="podcast-description">
+	<h1 class="description-headline">Description</h1>
+	<span id="description-full-text"></span>
+</div>
       <script>
 	var songs = [
 	    {% for podcast in podcasts %}
@@ -37,7 +41,8 @@
 		"album": "{{ podcast[0] }}",
 		"url": "{{ podcast[1]}}",
 		"cover_art_url": "{{ podcast[4] }}",
-		"date": "{{ podcast[3] }}"
+		"date": "{{ podcast[3] }}",
+		"description": "{{ podcast[5] }}"
 	    }{% if not loop.last %},{% endif %}
 	    {% endfor %}
 	];

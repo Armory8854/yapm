@@ -44,12 +44,11 @@ def urlPagination(db_file, url, max_downloads, page_number=1):
 
 def dictCreation(entry, iteration):
     episode_link = entry['links'][1]['href']
-    print(episode_link)
     episode_title = entry['title']
-    print(episode_title)
     episode_date = dateParser(entry['published'])
-    print(episode_date)
-    return episode_link, episode_title, episode_date
+    episode_description = htmlPrettyPrint(entry['description'])
+    print(episode_description)
+    return episode_link, episode_title, episode_date, episode_description
     
 def indexMetaGathering(db_file):
     # First define ARRAYS / LISTS to insert together later

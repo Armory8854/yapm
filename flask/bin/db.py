@@ -33,6 +33,7 @@ def initDB(db_file):
         episode_title TEXT,
         episode_date TEXT,
         episode_image TEXT,
+        episode_description TEXT,
         download_dir TEXT,
         downloaded INTEGER,
         UNIQUE(episode_title),
@@ -59,9 +60,9 @@ def initDB(db_file):
 
 # New Podcast functions #
 ## Inserts new *EPISODES* into the PODCAST table
-def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image):
-    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, downloaded) VALUES (?, ?, ?, ?, ?, ?)"
-    values = podcast_title, episode_link, episode_title, episode_date, episode_image, "0"
+def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description):
+    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), "0"
     executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    
