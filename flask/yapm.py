@@ -3,7 +3,7 @@ import time
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
 from bin.new_podcast_download import newPodcastDownload, newPodcastDLDB, newPodcastDLInputs
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded
+from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded, removePodcastSource
 from bin.parser import indexMetaGathering
 
 def create_app():
@@ -76,6 +76,13 @@ def create_app():
     def new_source(name=None):
         new_podcast_source = request.form.get('podcast-rss-entry')
         newPodcastSource(db_file, new_podcast_source)
+        return redirect(url_for('index'))
+
+    @app.route("/remove-source",methods=['POST'])
+    def remove_source(name=None):
+        remove_podcast_source = request.form.get('podcast-source-removal')
+        print(remove_podcast_source)
+        removePodcastSource(db_file, remove_podcast_source)
         return redirect(url_for('index'))
 
     # Schedule the download job to run every hour

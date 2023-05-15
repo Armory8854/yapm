@@ -135,3 +135,11 @@ def updateDB(db_file, max_downloads, download_all, download_dir):
     command = "UPDATE settings SET max_downloads=?, download_all=?, download_dir=?"
     values = max_downloads, download_all, download_dir
     executeDB(db_file, command, (values))
+
+## Keep in mind this should remove all EPISODES too!
+def removePodcastSource(db_file, remove_podcast_source):
+    source_command = "DELETE FROM podcasts WHERE podcast_title=?"
+    episodes_command = "DELETE FROM episodes WHERE podcast_title=?"
+    commands = source_command, episodes_command
+    for i in commands:
+        executeDB(db_file, i, (remove_podcast_source,))

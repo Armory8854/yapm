@@ -4,14 +4,27 @@
       {% include "header.html" %}
       <button class="button-style" onClick="location.href='/download-new'">Download New Podcasts</button>
       <button class="button-style" onClick="openDialog()">Add New Podcasts</button>
+	  <button class="button-style" onclick="openRemove()">Remove Podcasts</button>
       <dialog id="podcast-popup">
-	<form action="/new-source" method="POST">
-	  <label for="podcast-rss-entry">Enter RSS URL:</label>
-	  <input type="text" id="podcastt-rss-entry" name="podcast-rss-entry">
-	  <br>
-	  <button onClick="closeDialog()">Submit</button>
-	</form>
+		<form action="/new-source" method="POST">
+	 		<label for="podcast-rss-entry">Enter RSS URL:</label>
+	  		<input type="text" id="podcast-rss-entry" name="podcast-rss-entry">
+	  		<br>
+	  		<button onClick="closeDialog()">Submit</button>
+		</form>
       </dialog>
+	  <dialog id="removal-popup">
+		<form action="/remove-source" method="POST">
+		<label for="podcast-source-removal">Select Podcast To Remove</label>
+			<select for="podcast-source-removal" name="podcast-source-removal">
+				{% for podcast in meta_dict %} 
+				<option value="{{ podcast.title }}">{{ podcast.title }}</option>
+				{% endfor %}
+				<br>
+			</select>
+			<button onClick="closeRemove()">Submit</button>
+		</form>
+	</dialog>
       <div class="home-grid">
 	{% for podcast in meta_dict %}
 	<div class="home-grid-item">
@@ -29,7 +42,17 @@
 
     function closeDialog() {
 	var dialog = document.getElementById("podcast-popup");
-	dialog.close();
-    }
+	dialog.close(); 
+	}
+
+	function openRemove() {
+		var dialog = document.getElementById("removal-popup");
+		dialog.showModal();
+	}
+
+	function closeRemove() {
+		var dialog = document.getElementById("removal-popup");
+		dialog.close()
+	}
     </script>
 </html>
