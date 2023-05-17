@@ -62,6 +62,7 @@ def initDB(db_file):
 # New Podcast functions #
 ## Inserts new *EPISODES* into the PODCAST table
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description):
+    episode_description = str(episode_description).replace("\n","-")
     command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?)"
     values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), "0"
     executeDB(db_file, command, values)
