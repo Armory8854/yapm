@@ -102,7 +102,6 @@ def initOPML(opml_file):
 def exportToOPML(db_file, opml_file):
     opml = OpmlDocument() 
     titles = gatherPodcastSources(db_file)[0]
-    images = gatherPodcastSources(db_file)[1]
     urls = gatherPodcastSources(db_file)[2]
     pod_range = range(len(titles))
     if pod_range == 0:
@@ -112,7 +111,6 @@ def exportToOPML(db_file, opml_file):
             opml.add_rss(
                 title=titles[i][0], 
                 text=titles[i][0],
-                image=images[i][0],
                 xml_url=urls[i][0]
             )
             opml.dump(opml_file, pretty=True)
