@@ -126,5 +126,4 @@ def importOPML(db_file, opml_file):
     for item in items:
         podcast_url = item.get("xmlUrl")
         podcast_title = item.get("title")
-        podcast_image = item.get("image")
         newPodcastSourceDB(db_file, podcast_title, podcast_url) 

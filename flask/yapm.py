@@ -1,6 +1,6 @@
 import schedule
 import time
-from flask import Flask, render_template, request, url_for, flash, redirect, send_file 
+from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request
 from bin.new_podcast_download import newPodcastDownload, newPodcastDLDB, newPodcastDLInputs
 from bin.new_podcast_source import newPodcastSource
 from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded, removePodcastSource
@@ -93,8 +93,10 @@ def create_app():
         mimetype = "application/octet-stream" 
         return send_file(opml_file, mimetype=mimetype, as_attachment=True)
 
-    @app.route("/opml-import")
+    @app.route("/opml-import",methods=['POST'])
     def opml_import(name=None):
+        uploaded_opml_file = request.files['uploaded_opml_file']
+        uploaded_opml_file.save(opml_file)
         importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 

@@ -6,7 +6,14 @@
       <button class="button-style" onClick="openDialog()">Add New Podcasts</button>
 	  <button class="button-style" onClick="openRemove()">Remove Podcasts</button>
 	  <button class="button-style" onClick="location.href='/opml-export'">OPML Export</button>
-	  <button class="button-style" onClick="location.href='/opml-import'">OPML Import</button>
+	  <button class="button-style" onClick="openImport()">OPML Import</button>
+	  <dialog id="opml-import-popup">
+		<form method="POST" action="/opml-import" enctype="multipart/form-data">
+			<input type="file" name="uploaded_opml_file">
+			<br>
+			<button onClick="closeImport()">Submit</button>
+	  	</form>
+	  </dialog>
       <dialog id="podcast-popup">
 		<form action="/new-source" method="POST">
 	 		<label for="podcast-rss-entry">Enter RSS URL:</label>
@@ -22,9 +29,10 @@
 				{% for podcast in meta_dict %} 
 				<option value="{{ podcast.title }}">{{ podcast.title }}</option>
 				{% endfor %}
-				<br>
 			</select>
+			<br>
 			<button onClick="closeRemove()">Submit</button>
+			<button onClick="closeRemove()">Close</button>
 		</form>
 	</dialog>
     <div class="home-grid">
@@ -56,5 +64,15 @@
 		var dialog = document.getElementById("removal-popup");
 		dialog.close()
 	}
+
+	function openImport() {
+		var dialog = document.getElementById("opml-import-popup")
+		dialog.showModal()
+	}
+	function closeImport() {
+		var dialog = document.getElementById("opml-import-popup")
+		dialog.showModal()
+	}
+
     </script>
 </html>
