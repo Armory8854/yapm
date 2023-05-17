@@ -1,19 +1,22 @@
 import schedule
 import time
-from flask import Flask, render_template, request, url_for, flash, redirect, abort
+from flask import Flask, render_template, request, url_for, flash, redirect, send_file 
 from bin.new_podcast_download import newPodcastDownload, newPodcastDLDB, newPodcastDLInputs
 from bin.new_podcast_source import newPodcastSource
 from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded, removePodcastSource
-from bin.parser import indexMetaGathering
+from bin.parser import indexMetaGathering, exportToOPML, initOPML, importOPML
 
 def create_app():
     app = Flask(__name__, static_url_path='/static', static_folder = 'static')
 
     db_file = "data/database.db"
+    opml_file = "data/subscriptions.opml"
+
     initDB(db_file)
+    initOPML(opml_file)
 
     def scheduleDownloadJob():
-        newPodcastDownload(db_file)
+       download_new()
 
     @app.route("/")
     def index(name=None):
@@ -81,8 +84,18 @@ def create_app():
     @app.route("/remove-source",methods=['POST'])
     def remove_source(name=None):
         remove_podcast_source = request.form.get('podcast-source-removal')
-        print(remove_podcast_source)
         removePodcastSource(db_file, remove_podcast_source)
+        return redirect(url_for('index'))
+
+    @app.route("/opml-export")
+    def opml_export(name=None):
+        exportToOPML(db_file, opml_file)
+        mimetype = "application/octet-stream" 
+        return send_file(opml_file, mimetype=mimetype, as_attachment=True)
+
+    @app.route("/opml-import")
+    def opml_import(name=None):
+        importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 
     # Schedule the download job to run every hour

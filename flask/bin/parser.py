@@ -3,8 +3,9 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import feedparser
 import json
-import re
-from .db import gatherPodcastSources, gatherSettings
+from opml import OpmlDocument
+from pathlib import Path
+from .db import gatherPodcastSources, gatherSettings, newPodcastSourceDB
 
 def jsonPrettyPrint(data):
     json_object = data
@@ -28,6 +29,7 @@ def maxDownloadsCheck(feed_len, max_downloads):
         print("New max Downloads: " + str(max_downloads))
     return max_downloads
 
+# Looks ugly at first glance. How could I streamline this?
 def urlPagination(db_file, url, max_downloads, page_number=1):
     settings_dict = gatherSettings(db_file)
     max_downloads = settings_dict['max_downloads']
@@ -47,15 +49,16 @@ def dictCreation(entry, iteration):
     episode_title = entry['title']
     episode_date = dateParser(entry['published'])
     episode_description = htmlPrettyPrint(entry['description'])
-    print(episode_description)
     return episode_link, episode_title, episode_date, episode_description
-    
+
+# This may need looked over again, it seems a lot more complicated than needed. 
 def indexMetaGathering(db_file):
     # First define ARRAYS / LISTS to insert together later
     meta_array = []
     titles = []
     images = []
-    db_titles, db_images, db_url = gatherPodcastSources(db_file)    
+    # Should be made into entries. Also db_urls is not used as of 2023-05-16
+    db_titles, db_images, db_urls = gatherPodcastSources(db_file)    
     # Define the DICT to store all values
     meta_dict = {}
     for i in range(len(db_titles)):
@@ -74,6 +77,7 @@ def indexMetaGathering(db_file):
         meta_array.append(meta_dict)
     return meta_array
 
+# This is god awful and should be regex. No way this is acceptable.
 def sanitizeNames(episode_title):
     chars_to_dash = ["/",":"]
     chars_to_del = ["?","!","."]
@@ -84,3 +88,43 @@ def sanitizeNames(episode_title):
         episode_title = episode_title.replace(i,"")
         
     return episode_title
+
+def initOPML(opml_file):
+    print("INIT OPML STARTED")
+    opml = OpmlDocument(title='YAPM Podcast Subscriptions')
+    data_path = Path("./data")
+    data_path.mkdir(parents=True, exist_ok=True)
+    if not Path(opml_file).exists():
+        opml.dump(opml_file, pretty=True)
+    else:
+        print('OPML FILE EXISTS')
+
+def exportToOPML(db_file, opml_file):
+    opml = OpmlDocument() 
+    titles = gatherPodcastSources(db_file)[0]
+    images = gatherPodcastSources(db_file)[1]
+    urls = gatherPodcastSources(db_file)[2]
+    pod_range = range(len(titles))
+    if pod_range == 0:
+        print("No podcasts to add - try adding some!")
+    else:
+        for i in pod_range:
+            opml.add_rss(
+                title=titles[i][0], 
+                text=titles[i][0],
+                image=images[i][0],
+                xml_url=urls[i][0]
+            )
+            opml.dump(opml_file, pretty=True)
+
+def importOPML(db_file, opml_file):
+    with open(opml_file, 'r') as f:
+        contents = f.read()
+
+    soup = BeautifulSoup(contents, features='xml')
+    items = soup.find_all("outline")
+    for item in items:
+        podcast_url = item.get("xmlUrl")
+        podcast_title = item.get("title")
+        podcast_image = item.get("image")
+        newPodcastSourceDB(db_file, podcast_title, podcast_url) 

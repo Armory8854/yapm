@@ -4,7 +4,9 @@
       {% include "header.html" %}
       <button class="button-style" onClick="location.href='/download-new'">Download New Podcasts</button>
       <button class="button-style" onClick="openDialog()">Add New Podcasts</button>
-	  <button class="button-style" onclick="openRemove()">Remove Podcasts</button>
+	  <button class="button-style" onClick="openRemove()">Remove Podcasts</button>
+	  <button class="button-style" onClick="location.href='/opml-export'">OPML Export</button>
+	  <button class="button-style" onClick="location.href='/opml-import'">OPML Import</button>
       <dialog id="podcast-popup">
 		<form action="/new-source" method="POST">
 	 		<label for="podcast-rss-entry">Enter RSS URL:</label>
@@ -25,7 +27,7 @@
 			<button onClick="closeRemove()">Submit</button>
 		</form>
 	</dialog>
-      <div class="home-grid">
+    <div class="home-grid">
 	{% for podcast in meta_dict %}
 	<div class="home-grid-item">
 	  <img class="podcast-image" src="{{ podcast.image }}">

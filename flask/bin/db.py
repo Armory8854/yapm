@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import feedparser
 
 # General DB Functions, mainly executeDB #
 ## Generic sql query function
@@ -88,14 +89,14 @@ def podcastDownloaded(db_file, episode_title, download_dir):
     con.close()
     
 ## New podcast source
-def newPodcastSourceDB(db_file, podcast_title, new_podcast_source, podcast_image):
+def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
+    podcast_image = feedparser.parse(new_podcast_source).feed.image['href']
     command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image) VALUES (?, ?, ?)"
     values = podcast_title, new_podcast_source, podcast_image
     executeDB(db_file, command, (values))
 
 ## Gather podcast source info from the DB
 def gatherPodcastSources(db_file):
-    global podcast_title, podcast_image
     con = sqlite3.connect(db_file)
     cur = con.cursor()
     podcast_title = cur.execute("SELECT podcast_title FROM podcasts;").fetchall()
