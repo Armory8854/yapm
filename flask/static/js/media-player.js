@@ -8,6 +8,10 @@ var podcast = podcast.replace('%20',' ');
 var speedSelect = document.getElementById('speed-select');
 var podcastDescription = document.getElementById('description-full-text')
 var progress = document.getElementById('progress-bar')
+var progressBarContainer = document.getElementById('progress-bar-container')
+var duration = 0;
+
+progressBarContainer.addEventListener('click', seekBar);
 
 function changePlaybackSpeed(speed) {
   player.rate(speed);
@@ -18,7 +22,6 @@ if (podcast) {
     return song.artist === podcast;
   });
 } else {
-  // If no artist parameter provided, display all songs
   filteredSongs = songs;
 }
 
@@ -47,7 +50,7 @@ for (var i = 0; i < filteredSongs.length; i++) {
 	      playSong(index);
         requestAnimationFrame(step);
     });
-	songList.appendChild(container);
+  	songList.appendChild(container);
     })(i);
 };
 
@@ -104,6 +107,8 @@ function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
+        var duration = player.duration();
+        console.log('Song Duration: ' + duration);
 	      updateMetadata();
 	      if (!player.playing()) {
 		      player.play();
@@ -145,6 +150,19 @@ function step() {
   if (player.playing()) {
       requestAnimationFrame(step);
   }
+}
+
+
+function seekBar(event) {
+  var duration = player.duration();
+  var offset = event.clientX - progressBarContainer.offsetLeft;
+  var containerWidth = progressBarContainer.clientWidth;
+  var percentage = (offset / containerWidth) * 100;
+  progress.style.width = percentage + '%';
+  var skipPercent = duration * ( percentage / 100 );
+  console.log(skipPercent);
+  player.seek(skipPercent);
+  player.play();
 }
 
 speedSelect.addEventListener('change', function() {
