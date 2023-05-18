@@ -7,11 +7,7 @@ var podcast = urlParams.get('podcast');
 var podcast = podcast.replace('%20',' ');
 var speedSelect = document.getElementById('speed-select');
 var podcastDescription = document.getElementById('description-full-text')
-
-speedSelect.addEventListener('change', function() {
-  var selectedSpeed = parseFloat(speedSelect.value);
-  changePlaybackSpeed(selectedSpeed);
-});
+var progress = document.getElementById('progress-bar')
 
 function changePlaybackSpeed(speed) {
   player.rate(speed);
@@ -32,23 +28,24 @@ filteredSongs.sort(function(a, b) {
 
 for (var i = 0; i < filteredSongs.length; i++) {
     (function(index) {
-    var container = document.createElement('div');
-    var song = filteredSongs[i];
-    var artistElement = document.createElement('p');
-    var titleElement = document.createElement('p');
+      var container = document.createElement('div');
+      var song = filteredSongs[i];
+      var artistElement = document.createElement('p');
+      var titleElement = document.createElement('p');
 
-    artistElement.textContent = song.artist;
-    artistElement.classList.add('artist');
+      artistElement.textContent = song.artist;
+      artistElement.classList.add('artist');
     
-    titleElement.textContent = song.date + ' - ' + song.name;
-    titleElement.classList.add('details');
+      titleElement.textContent = song.date + ' - ' + song.name;
+      titleElement.classList.add('details');
 
-	container.setAttribute('class', 'song');
-	container.setAttribute('onClick', 'nowPlaying()');
-    container.appendChild(artistElement);
-    container.appendChild(titleElement);
-    container.addEventListener('click', function() {
-	playSong(index);
+  	  container.setAttribute('class', 'song');
+	    container.setAttribute('onClick', 'nowPlaying()');
+      container.appendChild(artistElement);
+      container.appendChild(titleElement);
+      container.addEventListener('click', function() {
+	      playSong(index);
+        requestAnimationFrame(step);
     });
 	songList.appendChild(container);
     })(i);
@@ -65,8 +62,8 @@ function nowPlaying() {
 var player = new Howl({
     src: [filteredSongs[currentSong].url],
     html5: true,
-    onload: function() {
-	updateMetadata();
+    onplay: function() {
+    	requestAnimationFrame(step);
     }
 });
 
@@ -77,16 +74,11 @@ function updateMetadata() {
   podcastDescription.textContent = currentSongData.description;
 };
 
-function updateProgressBar() {
-  var progress = player.seek() / player.duration() * 100; // Calculate the progress percentage
-  var progressBar = document.getElementById('progress-bar');
-  progressBar.style.width = progress + '%'; // Set the width of the progress bar element
-}
 
 function playNext() {
     currentSong++;
     if (currentSong >= filteredSongs.length) {
-	currentSong = 0; // Start from the beginning if reached the end
+	    currentSong = 0; // Start from the beginning if reached the end
     };
     playCurrentSong(playbackPosition);
 };
@@ -109,29 +101,30 @@ function playCurrentSong(playbackPosition) {
     player.stop(); // Stop the currently playing song
     player.unload(); // Unload the current song
     player = new Howl({
-	src: [filteredSongs[currentSong].url],
-	html5: true,
-	onload: function() {
-	    updateMetadata();
-	    if (!player.playing()) {
-		player.play();
-		player.rate(1);
-	    }
-	},
-	onplay: function() {
-	    updateProgressBar();
-	}
-    });
+  	src: [filteredSongs[currentSong].url],
+	    html5: true,
+	    onload: function() {
+	      updateMetadata();
+	      if (!player.playing()) {
+		      player.play();
+		      player.rate(1);
+	      }
+	  },
+	  onplay: function() {
+    requestAnimationFrame(step)
+  }
+  });
+}
+
+function pauseButton() {
+    playbackPosition = player.seek();
+    console.log("playback position is", playbackPosition)
+    player.pause();
 }
 
 function playButton() {
     player.seek(playbackPosition);
     player.play();
-}
-
-function pauseButton() {
-    playbackPosition = player.seek();
-    player.pause();
 }
 
 function togglePlay() {
@@ -145,3 +138,16 @@ function togglePlay() {
     }
   }
 }
+
+function step() {
+  var seek = player.seek() || 0;
+  progress.style.width = (((seek / player.duration()) * 100) || 0) + '%';
+  if (player.playing()) {
+      requestAnimationFrame(step);
+  }
+}
+
+speedSelect.addEventListener('change', function() {
+  var selectedSpeed = parseFloat(speedSelect.value);
+  changePlaybackSpeed(selectedSpeed);
+});

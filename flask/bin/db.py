@@ -45,7 +45,7 @@ def initDB(db_file):
         download_all INT,
         download_dir STR
         );"""
-        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(10,0,'/Podcasts');"
+        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(1,0,'/Podcasts');"
         init_commands = init_podcasts_command, init_episodes_command, init_settings_command
 
         for i in clear_tables:
