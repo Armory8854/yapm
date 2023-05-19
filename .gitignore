@@ -10,3 +10,4 @@ __pycache__
 podman-start.sh
 venv/
 *.opml
+config.py
