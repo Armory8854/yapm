@@ -19,6 +19,8 @@ def initDB(db_file):
     print("DB INIT STARTED")
     data_path = Path("./data")
     data_path.mkdir(parents=True, exist_ok=True)
+    podcast_path = Path("./static/podcasts")
+    podcast_path.mkdir(parents=True, exist_ok=True)
     db_path = Path(db_file)
     if not db_path.exists():
         clear_tables = [ "episodes", "podcasts", "settings" ]
@@ -37,6 +39,7 @@ def initDB(db_file):
         episode_description TEXT,
         download_dir TEXT,
         downloaded INTEGER,
+        file_path TEXT,
         UNIQUE(episode_title),
         FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
         );"""
@@ -45,7 +48,7 @@ def initDB(db_file):
         download_all INT,
         download_dir STR
         );"""
-        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(1,0,'/Podcasts');"
+        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(1,0,'static/podcasts');"
         init_commands = init_podcasts_command, init_episodes_command, init_settings_command
 
         for i in clear_tables:
@@ -61,10 +64,10 @@ def initDB(db_file):
 
 # New Podcast functions #
 ## Inserts new *EPISODES* into the PODCAST table
-def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description):
+def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path):
     episode_description = str(episode_description).replace("\n","-")
-    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), "0"
+    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0"
     executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    

@@ -36,19 +36,19 @@
 	<span id="description-full-text"></span>
 </div>
       <script>
-	var songs = [
-	    {% for podcast in podcasts %}
-	    {
-		"name": "{{ podcast[2] }}",
-		"artist": "{{ podcast[0] }}",
-		"album": "{{ podcast[0] }}",
-		"url": "{{ podcast[1]}}",
-		"cover_art_url": "{{ podcast[4] }}",
-		"date": "{{ podcast[3] }}",
-		"description": "{{ podcast[5] }}" 
-	    }{% if not loop.last %},{% endif %}
-	    {% endfor %}
-	];
+		var songs = [
+	 	   {% for podcast in podcasts %}
+	  	    {
+				"name": "{{ podcast[2] }}",
+				"artist": "{{ podcast[0] }}",
+				"album": "{{ podcast[0] }}",
+				"url": "{{ podcast[6] }}",
+				"cover_art_url": "{{ podcast[4] }}",
+				"date": "{{ podcast[3] }}",
+				"description": "{{ podcast[5] }}" 
+	    	}{% if not loop.last %},{% endif %}
+	    	{% endfor %}
+		];
       </script>
       <script src="{{ media_player_url }}"></script>
     </body>

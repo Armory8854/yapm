@@ -16,14 +16,11 @@ def fileChecker(desired_file):
         file_exists=False
     return file_exists
 
-def mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date):
+def mp3Download(podcast_dir, podcast_title, episode_link, file_path):
     retries = 0
     max_retries = 3
     retry_delay = 10
-    episode_title = sanitizeNames(episode_title)
-    download_path = str(podcast_dir + "/" + podcast_title + "/")
-    file_path = download_path + episode_date + "-" + episode_title + ".mp3"
-    pathCreator(download_path)
+    pathCreator(podcast_dir)
     while retries < max_retries:
         try:
             r = requests.get(episode_link)

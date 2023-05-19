@@ -8,17 +8,19 @@ def newPodcastDLInputs(db_file):
     return settings_dict, urls_dirty
 
 def newPodcastDLDB(db_file, settings_dict, urls_dirty):
-    podcast_dir = settings_dict['download_dir']
+    download_dir = settings_dict['download_dir']
     max_downloads = settings_dict['max_downloads']
     urls = [x[0] for x in urls_dirty]
     for url in urls:
         values = urlPagination(db_file, url, max_downloads)
         entries = values[0]
         podcast_title = values[1]
+        podcast_dir = str(download_dir + "/" + podcast_title)
         podcast_image = values[2]
-        for i, entry in enumerate(entries): 
+        for i, entry in enumerate(entries):
             episode_link, episode_title, episode_date, episode_description = dictCreation(entry, i)
-            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image, episode_description) 
+            file_path = podcast_dir + episode_date + "-" + episode_title + ".mp3"
+            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image, episode_description, file_path) 
 
     new_podcasts = downloadSearch(db_file)
     return podcast_dir, new_podcasts
@@ -30,7 +32,7 @@ def newPodcastDownload(new_podcasts, podcast_dir, iteration):
         episode_title = new_podcasts[iteration][2]
         episode_link = new_podcasts[iteration][1]
         episode_date = new_podcasts[iteration][3]
-        file_path = str(podcast_dir + "/" + podcast_title + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
+        file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
         print("Downloading " + podcast_title + " - " + episode_title)
-        mp3Download(podcast_dir, podcast_title, episode_link, episode_title, episode_date)
+        mp3Download(podcast_dir, podcast_title, episode_link, file_path)
         return episode_title, file_path

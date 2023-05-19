@@ -66,7 +66,11 @@ var player = new Howl({
     src: [filteredSongs[currentSong].url],
     html5: true,
     onplay: function() {
+      updateMetadata();
     	requestAnimationFrame(step);
+    },
+    onload: function() {
+      updateMetadata();
     }
 });
 
@@ -116,8 +120,9 @@ function playCurrentSong(playbackPosition) {
 	      }
 	  },
 	  onplay: function() {
-    requestAnimationFrame(step)
-  }
+      updateMetadata()
+      requestAnimationFrame(step)
+    }
   });
 }
 
