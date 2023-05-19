@@ -6,3 +6,4 @@ schedule
 beautifulsoup4
 gevent
 pyopml
+pydub
