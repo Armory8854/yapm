@@ -6,7 +6,8 @@ COPY requirements.txt /app/requirements.txt
 RUN mkdir /Podcasts && \
     cd /app && \
     pip install -r requirements.txt && \
-    mkdir -p /app/data
+    mkdir -p /app/data && \
+    apk add ffmpeg
 
 WORKDIR /app
 
