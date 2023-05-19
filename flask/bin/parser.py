@@ -5,7 +5,7 @@ import feedparser
 import json
 from opml import OpmlDocument
 from pathlib import Path
-from db import gatherPodcastSources, gatherSettings, newPodcastSourceDB
+from .db import gatherPodcastSources, gatherSettings, newPodcastSourceDB
 
 def jsonPrettyPrint(data):
     json_object = data
