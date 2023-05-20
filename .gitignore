@@ -11,3 +11,4 @@ podman-start.sh
 venv/
 *.opml
 config.py
+podcasts/
