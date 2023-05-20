@@ -58,13 +58,17 @@ def indexMetaGathering(db_file):
     titles = []
     images = []
     # Should be made into entries. Also db_urls is not used as of 2023-05-16
-    db_titles, db_images, db_urls = gatherPodcastSources(db_file)    
+    sources = gatherPodcastSources(db_file)
+    db_titles = sources[0]
+    db_images = sources[1]
+    print(db_titles)
+    print(db_images)
     # Define the DICT to store all values
     meta_dict = {}
     for i in range(len(db_titles)):
         # First gather the VALUES
-        podcast_title = db_titles[i][0]
-        podcast_image = db_images[i][0]
+        podcast_title = db_titles[i]
+        podcast_image = db_images[i]
         # Then, append these to the proper arrays
         titles.append(podcast_title)
         images.append(podcast_image)
@@ -79,8 +83,8 @@ def indexMetaGathering(db_file):
 
 # This is god awful and should be regex. No way this is acceptable.
 def sanitizeNames(episode_title):
-    chars_to_dash = ["/",":"," ","&"]
-    chars_to_del = ["?","!","."]
+    chars_to_dash = ["/"," ","&"]
+    chars_to_del = ["?","!",".",":"]
     for i in chars_to_dash:
         episode_title = episode_title.replace(i,"-")
 

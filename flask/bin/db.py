@@ -94,10 +94,15 @@ def podcastDownloaded(db_file, episode_title, download_dir):
     
 ## New podcast source
 def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
+    con = sqlite3.connect(db_file)
+    cur = con.cursor() 
     podcast_image = feedparser.parse(new_podcast_source).feed.image['href']
     command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image) VALUES (?, ?, ?)"
-    values = podcast_title, new_podcast_source, podcast_image
-    executeDB(db_file, command, values)
+    values = [ podcast_title, new_podcast_source, podcast_image ]
+    print(values[0])
+    cur.execute(command, (values))
+    con.commit()
+    con.close()
 
 ## Gather podcast source info from the DB
 def gatherPodcastSources(db_file):
