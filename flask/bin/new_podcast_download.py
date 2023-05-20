@@ -23,16 +23,16 @@ def newPodcastDLDB(db_file, settings_dict, urls_dirty):
             insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image, episode_description, file_path) 
 
     new_podcasts = downloadSearch(db_file)
-    return podcast_dir, new_podcasts
+    return new_podcasts
     
 
-def newPodcastDownload(new_podcasts, podcast_dir, iteration):
-    for i in range(len(new_podcasts)):
-        podcast_title = new_podcasts[iteration][0]
-        episode_title = new_podcasts[iteration][2]
-        episode_link = new_podcasts[iteration][1]
-        episode_date = new_podcasts[iteration][3]
-        file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
-        print("Downloading " + podcast_title + " - " + episode_title)
-        mp3Download(podcast_dir, episode_title, episode_link, episode_date)
-        return episode_title, file_path
+def newPodcastDownload(new_podcasts, download_dir, iteration):
+    podcast_title = new_podcasts[iteration][0]
+    episode_title = new_podcasts[iteration][2]
+    episode_link = new_podcasts[iteration][1]
+    episode_date = new_podcasts[iteration][3]
+    podcast_dir = str(download_dir + "/" + podcast_title)
+    file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
+    print("Downloading " + podcast_title + " - " + episode_title)
+    mp3Download(podcast_dir, episode_title, episode_link, episode_date)
+    return episode_title, file_path

@@ -123,5 +123,7 @@ def importOPML(db_file, opml_file):
     items = soup.find_all("outline")
     for item in items:
         podcast_url = item.get("xmlUrl")
+        print(podcast_url)
         podcast_title = item.get("title")
+        print(podcast_title)
         newPodcastSourceDB(db_file, podcast_title, podcast_url) 

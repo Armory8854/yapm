@@ -54,18 +54,19 @@ def create_app():
     def download_new(name=None):
         attempts = 0
         start_time = time.time()
+        download_dir = gatherSettings(db_file)['download_dir']
         while attempts < 3:
             try:
                 dl_inputs = newPodcastDLInputs(db_file)
                 settings_dict = dl_inputs[0]
                 urls_dirty = dl_inputs[1]
-                db_inputs = newPodcastDLDB(db_file, settings_dict, urls_dirty)
-                podcast_dir = db_inputs[0]
-                new_podcasts = db_inputs[1]
+                new_podcasts = newPodcastDLDB(db_file, settings_dict, urls_dirty)
                 for i in range(len(new_podcasts)):
-                    downloaded_new = newPodcastDownload(new_podcasts, podcast_dir, i)
+                    downloaded_new = newPodcastDownload(new_podcasts, download_dir, i)
                     episode_title = downloaded_new[0]
                     file_path = downloaded_new[1]
+                    print(episode_title)
+                    print(file_path)
                     podcastDownloaded(db_file, episode_title, file_path)
                 break
             except KeyError:
