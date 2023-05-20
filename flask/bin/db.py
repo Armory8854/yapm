@@ -103,9 +103,10 @@ def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
 def gatherPodcastSources(db_file):
     con = sqlite3.connect(db_file)
     cur = con.cursor()
-    podcast_title = cur.execute("SELECT podcast_title FROM podcasts;").fetchall()
-    podcast_image = cur.execute("SELECT podcast_image FROM podcasts;").fetchall()
-    podcast_url = cur.execute("SELECT podcast_url FROM podcasts;").fetchall()
+    result = cur.execute("SELECT podcast_title, podcast_image, podcast_url FROM podcasts;").fetchall()
+    podcast_title = [row[0] for row in result]
+    podcast_image = [row[1] for row in result]
+    podcast_url = [row[2] for row in result]    
     con.close()
     return podcast_title, podcast_image, podcast_url
 

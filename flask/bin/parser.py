@@ -101,17 +101,18 @@ def initOPML(opml_file):
 
 def exportToOPML(db_file, opml_file):
     opml = OpmlDocument() 
-    titles = gatherPodcastSources(db_file)[0]
-    urls = gatherPodcastSources(db_file)[2]
+    data = gatherPodcastSources(db_file)
+    titles = data[0]
+    urls = data[2]
     pod_range = range(len(titles))
     if pod_range == 0:
         print("No podcasts to add - try adding some!")
     else:
         for i in pod_range:
             opml.add_rss(
-                title=titles[i][0], 
-                text=titles[i][0],
-                xml_url=urls[i][0]
+                title=titles[i], 
+                text=titles[i],
+                xml_url=urls[i]
             )
             opml.dump(opml_file, pretty=True)
 
