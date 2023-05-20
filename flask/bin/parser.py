@@ -34,6 +34,7 @@ def urlPagination(db_file, url, max_downloads, page_number=1):
     settings_dict = gatherSettings(db_file)
     max_downloads = settings_dict['max_downloads']
     d = feedparser.parse(url)
+    print(url)
     feed_len = len(d['entries'])
     max_downloads = maxDownloadsCheck(feed_len, max_downloads)
     page_size = max_downloads

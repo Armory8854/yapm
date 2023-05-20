@@ -7,12 +7,12 @@ def newPodcastDLInputs(db_file):
     urls_dirty = gatherPodcastSources(db_file)[2]
     return settings_dict, urls_dirty
 
-def newPodcastDLDB(db_file, settings_dict, urls_dirty):
+def newPodcastDLDB(db_file, settings_dict, urls):
     download_dir = settings_dict['download_dir']
     max_downloads = settings_dict['max_downloads']
-    urls = [x[0] for x in urls_dirty]
     for url in urls:
         values = urlPagination(db_file, url, max_downloads)
+        print(values)
         entries = values[0]
         podcast_title = values[1]
         podcast_dir = str(download_dir + "/" + podcast_title)
