@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <body>
+      {% include "header.html" %}
+      <h1>Search</h1>
+      <div id="search-form">
+        <form method="POST" action="/search-index">
+          <label for="search-index">Enter Podcast Title</label>
+          <input type="text" id="search-index" name="search-index">
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+      <div id="search-results">
+        <div id="search-list"></div>
+      </div>
+    </body>
+    <script>
+      var results = [
+        {% for result in search_list %}
+        {
+          "title": "{{ result['title'] }}",
+          "id": "{{ result['id'] }}", 
+          "feed_url": "{{ result['feed_url'] }}",
+          "feed_image": "{{ result['feed_image'] }}",
+          "feed_description": "{{ result['feed_description] }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ];
+    </script>
+</html>

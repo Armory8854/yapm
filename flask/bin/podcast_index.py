@@ -1,31 +1,31 @@
 import podcastindex
-import config
 import requests
 import time
 import hashlib
 import json
-from parser import jsonPrettyPrint
+import configparser
 
-api_key = config.api_key
-api_secret = config.api_secret
+# Set static variables that will always be used. Mainly, config file.
+## TODO: Mve to data/
+config_file = "bin/api_config.ini"
 
-
-api_config = {
-    "api_key": api_key,
-    "api_secret": api_secret
-}
-
-index = podcastindex.init(api_config)
+# For testing purposes
 podcast_title = "Linux Unplugged"
 
-def getPodcastID(podcast_title):
-    print("Searching...")
-    results = index.search(query=podcast_title)
-    pod_id = results['feeds'][0]['id']
-    print(pod_id)
-    return pod_id
+def getConfigKeys(config_file):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    api_key = config.get('api', 'api_key')
+    api_secret = config.get('api', 'api_secret')
+    api_config = {
+        "api_key": api_key,
+        "api_secret": api_secret
+    }
+    return api_config
 
-def getPodValue(pod_id):
+def setHeaders(api_config):
+    api_key = api_config['api_key']
+    api_secret = api_config['api_secret']
     current_time = int(time.time())
     data_to_hash = api_key + api_secret + str(current_time)
     sha_1 = hashlib.sha1(data_to_hash.encode()).hexdigest()
@@ -35,13 +35,52 @@ def getPodValue(pod_id):
         "X-Auth-Date": str(current_time), 
         "Authorization": sha_1 
     }
-    r = requests.get(url=f"https://api.podcastindex.org/api/1.0/value/byfeedid?id={pod_id}&pretty", headers=api_headers)
+    return api_headers
+
+def setIndex(api_config):
+    index = podcastindex.init(api_config)
+    return index
+
+def getRequest(r_url):
+    api_config = getConfigKeys(config_file)
+    api_headers = setHeaders(api_config)
+    setIndex(api_config)
+    r = requests.get(url=r_url, headers=api_headers)
     response = r.content.decode("utf-8")
     json_response = json.loads(response)
+    return json_response
+
+def searchForPodcasts(search_term):
+    search_list = []
+    search_dict = {}
+    max_page_size = 10
+    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={search_term}&pretty&max={max_page_size}")
+    json_response = getRequest(search_url)
+    for feed in json_response['feeds']:
+        feed_title = feed['title']
+        feed_id = feed['id']
+        feed_url = feed['url']
+        feed_image = feed['artwork']
+        feed_description = feed['description']
+        search_dict = {
+            'title': feed_title,
+            'id': feed_id,
+            'feed_url': feed_url,
+            'feed_image': feed_image,
+            'feed_description': feed_description
+        }
+        search_list.append(search_dict)
+    return search_list
+
+def getPodcastID(podcast_title):
+    print(str(f"Searching for {podcast_title} Podcast Index ID..."))
+    results = index.search(query=podcast_title)
+    pod_id = results['feeds'][0]['id']
+    print(str("Podcast index id: " + str(pod_id)))
+    return pod_id
+
+def getPodValue(pod_id):
+    val_url = str(f"https://api.podcastindex.org/api/1.0/value/byfeedid?id={pod_id}&pretty")
+    json_response = getRequest(val_url)
     ln_address = json_response['value']['destinations'][0]['address']
-
-def getValueTag(podcast_url):
-    print("something will go here soon")
-
-pod_id = getPodcastID(podcast_title)
-getPodValue(pod_id)
+    print(str("Podcast main lighting address: " + ln_address))
