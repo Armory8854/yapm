@@ -22,7 +22,7 @@
           "id": "{{ result['id'] }}", 
           "feed_url": "{{ result['feed_url'] }}",
           "feed_image": "{{ result['feed_image'] }}",
-          "feed_description": "{{ result['feed_description] }}"
+          "feed_description": "{{ result['feed_description'] }}"
         }{% if not loop.last %},{% endif %}
         {% endfor %}
       ];
