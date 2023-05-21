@@ -35,14 +35,18 @@ def create_app():
     @app.route("/search")
     def search(name=None):
         css_url = url_for('static', filename='styles.css')
-        return render_template('search.html', name=name, css_url=css_url)
+        if search_list != "":
+            return render_template('search.html', name=name, css_url=css_url, search_list=search_list)
+        else:
+            return render_template('search.html', name=name, css_url=css_url)
 
     @app.route("/search-index", methods=["POST"])
     def search_index(name=None):
+        css_url = url_for('static', filename='styles.css')
         rfg = request.form.get
         search_term = rfg('search-index')
         search_list = searchForPodcasts(search_term) 
-        return redirect(url_for('index', name=name, css_url=css_url, search_list=search_list))
+        return redirect(url_for('search', name=name, css_url=css_url, search_list=search_list))
 
     @app.route("/podcasts")
     def podcasts(name=None):
