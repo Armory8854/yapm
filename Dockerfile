@@ -3,8 +3,7 @@ FROM docker.io/python:3.10-alpine
 COPY flask/ /app
 COPY requirements.txt /app/requirements.txt
 
-RUN mkdir /Podcasts && \
-    cd /app && \
+RUN cd /app && \
     pip install -r requirements.txt && \
     mkdir -p /app/data && \
     apk add ffmpeg

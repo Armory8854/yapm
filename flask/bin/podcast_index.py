@@ -102,9 +102,8 @@ def getPodV4V(pod_id):
 
 def getValLink(podcast_title):
     print(str(f"Searching for {podcast_title} Value Link..."))
-    api_config = getConfigKeys(config_file)
-    index = setIndex(api_config)
-    results = index.search(query=podcast_title)
+    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
+    results = getRequest(search_url)
     print(results['feeds'][0])
     podcast_val_link = results['feeds'][0]['value']
     print(str("Podcast index id: " + str(pod_id)))

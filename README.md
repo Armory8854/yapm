@@ -24,7 +24,7 @@ Finally, run it
 
 ```
 $ podman run -p 8000:8000 \
-  --volume /path/to/podcast/downloads:/Podcasts:rw \
+  --volume /path/to/podcast/downloads:/app/static/podcasts:rw \
   --volume /path/to/data:/app/data:rw \
   localhost/yapm:latest
 ```
@@ -48,12 +48,9 @@ $ gunicorn -c gunicorn_config.py wsgi:app
 
 # TODO
 - [x] Implement proper playback of local files instead of streaming files.
-- [ ] Store image files locally instead of pulling high res copies online
+- [x] Store image files locally instead of pulling high res copies online
 - [ ] Docker/Podman compose
   - Kind of overkill due to how basic the app is. However, compose is much more friendlier in general.
-- [ ] Package for nix
-  - [ ] At the very least create a working proof of concept install.nix
-  - [ ] Create a service as well
 
 # Credits
 This program utilizes many different libraries, and I wanted to give them a special mention here. Without them, this project would have taken a lot longer to get where it is today:
