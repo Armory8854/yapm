@@ -50,6 +50,18 @@ def getRequest(r_url):
     json_response = json.loads(response)
     return json_response
 
+def getPodDesc(podcast_title):
+    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
+    json_response = getRequest(search_url)
+    description = json_response['feeds'][0]['description']
+    return description
+
+def getValLink(podcast_title):
+    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
+    json_response = getRequest(search_url)
+    description = json_response['feeds'][0]['description']
+    return description
+
 def searchForPodcasts(search_term):
     search_list = []
     search_dict = {}
@@ -74,13 +86,26 @@ def searchForPodcasts(search_term):
 
 def getPodcastID(podcast_title):
     print(str(f"Searching for {podcast_title} Podcast Index ID..."))
+    api_config = getConfigKeys(config_file)
+    index = setIndex(api_config)
     results = index.search(query=podcast_title)
     pod_id = results['feeds'][0]['id']
     print(str("Podcast index id: " + str(pod_id)))
     return pod_id
 
-def getPodValue(pod_id):
+def getPodV4V(pod_id):
     val_url = str(f"https://api.podcastindex.org/api/1.0/value/byfeedid?id={pod_id}&pretty")
     json_response = getRequest(val_url)
     ln_address = json_response['value']['destinations'][0]['address']
     print(str("Podcast main lighting address: " + ln_address))
+    return ln_address
+
+def getValLink(podcast_title):
+    print(str(f"Searching for {podcast_title} Value Link..."))
+    api_config = getConfigKeys(config_file)
+    index = setIndex(api_config)
+    results = index.search(query=podcast_title)
+    print(results['feeds'][0])
+    podcast_val_link = results['feeds'][0]['value']
+    print(str("Podcast index id: " + str(pod_id)))
+    return podcast_val_link 

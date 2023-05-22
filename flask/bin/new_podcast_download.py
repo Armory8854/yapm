@@ -1,4 +1,5 @@
-from .parser import dictCreation, sanitizeNames, urlPagination
+from .parser import dictCreation, urlPagination
+from .util import sanitizeNames
 from .db import insertEntry, downloadSearch, gatherPodcastSources, gatherSettings
 from .downloader import mp3Download
 
@@ -16,7 +17,7 @@ def newPodcastDLDB(db_file, settings_dict, urls):
         entries = values[0]
         podcast_title = values[1]
         podcast_dir = str(download_dir + "/" + podcast_title)
-        podcast_image = values[2]
+        podcast_image = str("static/image/" + podcast_title + ".jpg")
         for i, entry in enumerate(entries):
             episode_link, episode_title, episode_date, episode_description = dictCreation(entry, i)
             file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".opus")

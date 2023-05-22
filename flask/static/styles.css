@@ -139,6 +139,10 @@ body {
     padding: 20px;
 }
 
+#description-full-text {
+    margin-bottom: 20px;
+}
+
 #player-left-column {
     display: flex;
     flex-direction: column;

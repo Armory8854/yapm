@@ -12,3 +12,5 @@ venv/
 *.opml
 api_config.ini
 podcasts/
+image/
+test/

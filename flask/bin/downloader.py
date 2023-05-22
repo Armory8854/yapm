@@ -1,7 +1,8 @@
 import requests
 import os
 import time
-from .parser import sanitizeNames
+from pathlib import Path
+from .util import sanitizeNames
 from pydub import AudioSegment
 
 def pathCreator(desired_path):
@@ -20,6 +21,17 @@ def fileChecker(desired_file):
 def opusConversion(input_file, output_file):
     audio = AudioSegment.from_mp3(input_file)
     audio.export(output_file, format='opus')
+
+def imageDownload(podcast_title, image_url):
+    file_name = str("static/image/" + podcast_title + ".jpg")
+    save_path = Path(file_name)
+    if fileChecker(save_path) == True:
+        exit
+    else:
+        r = requests.get(image_url, stream=True)
+        with open(file_name, 'wb') as f:
+            f.write(r.content)
+    return file_name
 
 def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
     retries = 0
