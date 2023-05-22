@@ -2,29 +2,31 @@
 <html lang="en">
     <body>
       {% include "header.html" %}
-      <h1>Search</h1>
-      <div id="search-form">
-        <form method="POST" action="/search-index">
-          <label for="search-index">Enter Podcast Title</label>
+      <div id="search-form-div">
+        <form id="search-form" method="POST" action="/search-index">
+          <label id="search-form-label" for="search-index">Enter Podcast Title</label>
           <input type="text" id="search-index" name="search-index">
-          <input type="submit" value="Submit">
+          <input class="button-style" type="submit" value="Search">
         </form>
       </div>
       <div id="search-results">
         <div id="search-list"></div>
+          {% for result in search_list %}
+          <div class="search-result">
+            <div class="search-left-column">
+              <h2>{{ result['title'] }}</h2>
+              <img class="search-image" src="{{ result['feed_image'] }}" alt="{{ result['title'] }}">
+            </div>
+            <div class="search-right-column">
+              <p>{{ result['feed_description'] }}</p>
+              <form method="POST" action="/new-source">
+                <input type="hidden" name="podcast-rss-entry" value="{{ result['feed_url'] }}">
+                <input type="submit" value="Add Podcast"> 
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </body>
-    <script>
-      var results = [
-        {% for result in search_list %}
-        {
-          "title": "{{ result['title'] }}",
-          "id": "{{ result['id'] }}", 
-          "feed_url": "{{ result['feed_url'] }}",
-          "feed_image": "{{ result['feed_image'] }}",
-          "feed_description": "{{ result['feed_description'] }}"
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-      ];
-    </script>
 </html>

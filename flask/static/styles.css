@@ -235,3 +235,53 @@ body {
       text-align: center;
   }
 }
+
+/* Search Results CSS */
+#search-index {
+    width: 250px;
+    margin: auto;
+    margin-bottom: 15px;
+}
+#search-form-label {
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+#search-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-self: center;
+    text-align: center;
+}
+
+#search-results {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-image {
+    width: 25%;
+    margin: auto;
+}
+
+.search-result {
+    display: flex;
+}
+.search-left-column {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 50%;
+}
+
+.search-right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    align-self: center;
+    width: 50%;
+}
