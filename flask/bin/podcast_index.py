@@ -66,7 +66,8 @@ def searchForPodcasts(search_term):
     search_list = []
     search_dict = {}
     max_page_size = 10
-    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={search_term}&pretty&max={max_page_size}")
+    print(str(f"Searching for: {search_term}"))
+    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={search_term}&pretty&max={max_page_size}&similar=true")
     json_response = getRequest(search_url)
     for feed in json_response['feeds']:
         feed_title = feed['title']
@@ -96,14 +97,28 @@ def getPodcastID(podcast_title):
 def getPodV4V(pod_id):
     val_url = str(f"https://api.podcastindex.org/api/1.0/value/byfeedid?id={pod_id}&pretty")
     json_response = getRequest(val_url)
-    ln_address = json_response['value']['destinations'][0]['address']
-    print(str("Podcast main lighting address: " + ln_address))
+    try:
+        ln_address = json_response['value']['destinations'][0]['address']
+        print(str("Podcast main lighting address: " + ln_address))
+    except KeyError as ke: 
+        ln_address = ""
+        print(str(f"{pod_id} has no LN address. Key Error: {ke}"))
+    except TypeError as te:
+        ln_address = ""
+        print(str(f"{pod_id} has no ln address. Type Error: {te}"))
     return ln_address
 
 def getFundingLink(podcast_index_id):
     print(str(f"Searching for {podcast_index_id} Value Link..."))
     search_url = str(f"https://api.podcastindex.org/api/1.0/podcasts/byfeedid?id={podcast_index_id}&pretty")
     results = getRequest(search_url)
-    podcast_funding_link = results['feed']['funding']['url']
-    print(str(f"Pocast Funding link: {podcast_funding_link}"))
+    try:
+        podcast_funding_link = results['feed']['funding']['url']
+        print(str(f"Pocast Funding link: {podcast_funding_link}"))
+    except KeyError as ke:
+        podcast_funding_link = ""
+        print(str(f"{podcast_index_id} has no funding link. Key Error: {ke}"))
+    except TypeError as te:
+        podcast_funding_link = ""
+        print(str(f"{podcast_index_id} has no funding link. Type Error: {te}"))
     return podcast_funding_link 

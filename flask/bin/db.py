@@ -170,4 +170,5 @@ def removePodcastSource(db_file, remove_podcast_source):
     episodes_command = "DELETE FROM episodes WHERE podcast_title=?"
     commands = source_command, episodes_command
     for i in commands:
+        # what is going on here with the comma?
         executeDB(db_file, i, (remove_podcast_source,))
