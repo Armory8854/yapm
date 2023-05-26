@@ -100,11 +100,10 @@ def getPodV4V(pod_id):
     print(str("Podcast main lighting address: " + ln_address))
     return ln_address
 
-def getValLink(podcast_title):
-    print(str(f"Searching for {podcast_title} Value Link..."))
-    search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
+def getFundingLink(podcast_index_id):
+    print(str(f"Searching for {podcast_index_id} Value Link..."))
+    search_url = str(f"https://api.podcastindex.org/api/1.0/podcasts/byfeedid?id={podcast_index_id}&pretty")
     results = getRequest(search_url)
-    print(results['feeds'][0])
-    podcast_val_link = results['feeds'][0]['value']
-    print(str("Podcast index id: " + str(pod_id)))
-    return podcast_val_link 
+    podcast_funding_link = results['feed']['funding']['url']
+    print(str(f"Pocast Funding link: {podcast_funding_link}"))
+    return podcast_funding_link 

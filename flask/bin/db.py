@@ -1,7 +1,7 @@
 import sqlite3
 from pathlib import Path
 from .downloader import imageDownload
-from .podcast_index import getPodDesc, getPodcastID, getPodV4V, getValLink
+from .podcast_index import getPodDesc, getPodcastID, getPodV4V, getFundingLink
 import feedparser
 
 # General DB Functions, mainly executeDB #
@@ -113,10 +113,10 @@ def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
     podcast_image = imageDownload(podcast_title, podcast_image_url)
     podcast_index_id = getPodcastID(podcast_title)
     podcast_description = getPodDesc(podcast_title)
-#    podcast_val_link = getValLink(podcast_title)
+    podcast_funding_link = getFundingLink(podcast_index_id)
     podcast_v4v_address = getPodV4V(podcast_index_id)
-    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image, podcast_description, podcast_index_id, podcast_v4v_address) VALUES (?, ?, ?, ?, ?, ?)"
-    values = [ podcast_title, new_podcast_source, podcast_image, podcast_index_id, podcast_description, podcast_v4v_address]
+    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image, podcast_description, podcast_index_id, podcast_value_link, podcast_v4v_address) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    values = [ podcast_title, new_podcast_source, podcast_image, podcast_index_id, podcast_description, podcast_funding_link, podcast_v4v_address]
     cur.execute(command, (values))
     con.commit()
     con.close()
