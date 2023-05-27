@@ -4,13 +4,10 @@ import time
 import hashlib
 import json
 import configparser
+import sqlite3
 
 # Set static variables that will always be used. Mainly, config file.
-## TODO: Mve to data/
 config_file = "bin/api_config.ini"
-
-# For testing purposes
-podcast_title = "Linux Unplugged"
 
 def getConfigKeys(config_file):
     config = configparser.ConfigParser()
@@ -94,19 +91,50 @@ def getPodcastID(podcast_title):
     print(str("Podcast index id: " + str(pod_id)))
     return pod_id
 
-def getPodV4V(pod_id):
+def getPodV4V(db_file, podcast_title, pod_id):
+    print(db_file)
     val_url = str(f"https://api.podcastindex.org/api/1.0/value/byfeedid?id={pod_id}&pretty")
     json_response = getRequest(val_url)
     try:
-        ln_address = json_response['value']['destinations'][0]['address']
-        print(str("Podcast main lighting address: " + ln_address))
+        value_list = []
+        value_dict = {}
+        ln_addresses = json_response['value']['destinations']
+        for address in ln_addresses:
+            split_name = address['name']
+            split_address = address['address']
+            split_type = address['type']
+            split_percent = address['split']
+            value_dict = {
+                'name': split_name,
+                'address': split_address,
+                'type': split_type,
+                'percent': split_percent
+            }
+            value_list.append(value_dict)
+        newPodcastSourceLN(db_file, podcast_title, value_list)
     except KeyError as ke: 
-        ln_address = ""
+        value_list = []
         print(str(f"{pod_id} has no LN address. Key Error: {ke}"))
     except TypeError as te:
-        ln_address = ""
+        value_list = []
         print(str(f"{pod_id} has no ln address. Type Error: {te}"))
-    return ln_address
+    return value_list
+
+def newPodcastSourceLN(db_file, podcast_title, value_list):
+    for entry in value_list:
+        con = sqlite3.connect(db_file)
+        cur = con.cursor() 
+        split_name = entry['name']
+        split_address = entry['address']
+        split_type = entry['type']
+        split_percent = entry['percent']
+        command = "INSERT OR IGNORE INTO lightning(podcast_title, split_name, type, address, split_percent) VALUES (?, ?, ?, ?, ?)"
+        values = [ podcast_title, split_name, split_type, split_address, split_percent ]
+        cur.execute(command, (values))
+        con.commit()
+        con.close()
+
+
 
 def getFundingLink(podcast_index_id):
     print(str(f"Searching for {podcast_index_id} Value Link..."))

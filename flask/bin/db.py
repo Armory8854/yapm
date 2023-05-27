@@ -32,7 +32,7 @@ def initDB(db_file):
     db_path = Path(db_file)
     # Make the DB if it doesn't exist
     if not db_path.exists():
-        clear_tables = [ "episodes", "podcasts", "settings" ]
+        clear_tables = [ "episodes", "podcasts", "settings", "lightning" ]
         init_podcasts_command = """ CREATE TABLE IF NOT EXISTS podcasts(
             podcast_title TEXT,
             podcast_url TEXT,
@@ -40,7 +40,6 @@ def initDB(db_file):
             podcast_description TEXT, 
             podcast_index_id INTEGER,
             podcast_value_link TEXT,
-            podcast_v4v_address TEXT,
             UNIQUE(podcast_url)
         );"""
         init_episodes_command = """ CREATE TABLE IF NOT EXISTS episodes(
@@ -61,8 +60,17 @@ def initDB(db_file):
             download_all INT,
             download_dir STR
         );"""
+        init_lightning_command = """ CREATE TABLE IF NOT EXISTS lightning(
+            podcast_title TEXT,
+            split_name TEXT,
+            type TEXT,
+            address TEXT,
+            split_percent INTEGER,
+            UNIQUE(address),
+            FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
+        );"""
         default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(1,0,'static/podcasts');"
-        init_commands = init_podcasts_command, init_episodes_command, init_settings_command
+        init_commands = [ init_podcasts_command, init_episodes_command, init_lightning_command, init_settings_command ]
 
         for i in clear_tables:
             clear_command = "DROP TABLE IF EXISTS " + i + ";"
@@ -114,12 +122,14 @@ def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
     podcast_index_id = getPodcastID(podcast_title)
     podcast_description = getPodDesc(podcast_title)
     podcast_funding_link = getFundingLink(podcast_index_id)
-    podcast_v4v_address = getPodV4V(podcast_index_id)
-    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image, podcast_description, podcast_index_id, podcast_value_link, podcast_v4v_address) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    values = [ podcast_title, new_podcast_source, podcast_image, podcast_index_id, podcast_description, podcast_funding_link, podcast_v4v_address]
+    getPodV4V(db_file, podcast_title, podcast_index_id)
+    command = "INSERT OR IGNORE INTO podcasts(podcast_title, podcast_url, podcast_image, podcast_description, podcast_index_id, podcast_value_link) VALUES (?, ?, ?, ?, ?, ?)"
+    values = [ podcast_title, new_podcast_source, podcast_image, podcast_description, podcast_index_id, podcast_funding_link ]
     cur.execute(command, (values))
     con.commit()
     con.close()
+
+
 
 ## Gather podcast source info from the DB
 def gatherPodcastSources(db_file):
