@@ -59,3 +59,4 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
     print(f"Failed to download {episode_link} after {max_retries} retries.")
     return None
             
+

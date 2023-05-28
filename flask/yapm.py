@@ -1,9 +1,8 @@
 import schedule
-import time
 from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request
-from bin.new_podcast_download import newPodcastDownload, newPodcastDLDB, newPodcastDLInputs
+from bin.new_podcast_download import downloadNewFunction
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, podcastDownloaded, removePodcastSource
+from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource
 from bin.parser import indexMetaGathering, exportToOPML, initOPML, importOPML
 from bin.podcast_index import searchForPodcasts
 
@@ -15,9 +14,6 @@ def create_app():
 
     initDB(db_file)
     initOPML(opml_file)
-
-    def scheduleDownloadJob():
-       download_new()
 
     @app.route("/")
     def index(name=None):
@@ -66,29 +62,7 @@ def create_app():
 
     @app.route("/download-new")
     def download_new(name=None):
-        attempts = 0
-        start_time = time.time()
-        download_dir = gatherSettings(db_file)['download_dir']
-        while attempts < 3:
-            try:
-                dl_inputs = newPodcastDLInputs(db_file)
-                settings_dict = dl_inputs[0]
-                urls_dirty = dl_inputs[1]
-                new_podcasts = newPodcastDLDB(db_file, settings_dict, urls_dirty)
-                for i in range(len(new_podcasts)):
-                    downloaded_new = newPodcastDownload(new_podcasts, download_dir, i)
-                    episode_title = downloaded_new[0]
-                    file_path = downloaded_new[1]
-                    print(episode_title)
-                    print(file_path)
-                    podcastDownloaded(db_file, episode_title, file_path)
-                break
-            except KeyError:
-                attempts += 1
-                print("Key error occured - let's try again")
-        end_time = time.time()
-        duration = end_time - start_time
-        print("Duration: " + str(duration)) 
+        downloadNewFunction(db_file)
         return redirect(url_for('index'))
 
     @app.route("/new-source",methods=['POST'])
@@ -116,17 +90,5 @@ def create_app():
         importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 
-    # Schedule the download job to run every hour
-    schedule.every().hour.do(scheduleDownloadJob)
-
-    # Define a function to run the scheduler in a separate thread
-    def runScheduler():
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-
-    import threading
-    scheduler_thread = threading.Thread(target=runScheduler)
-    scheduler_thread.start()
 
     return app

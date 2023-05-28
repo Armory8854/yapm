@@ -5,7 +5,7 @@ import feedparser
 import json
 from opml import OpmlDocument
 from pathlib import Path
-from .db import gatherPodcastSources, gatherSettings, newPodcastSourceDB
+from .db import gatherPodcastSources, newPodcastSourceDB
 
 def jsonPrettyPrint(data):
     json_object = data
@@ -30,12 +30,11 @@ def maxDownloadsCheck(feed_len, max_downloads):
     return max_downloads
 
 # Looks ugly at first glance. How could I streamline this?
-def urlPagination(db_file, url, max_downloads, page_number=1):
-    settings_dict = gatherSettings(db_file)
-    max_downloads = settings_dict['max_downloads']
+def urlPagination(url, max_downloads, page_number=1):
     d = feedparser.parse(url)
     print(url)
     feed_len = len(d['entries'])
+    print(str(f"Max DL: {max_downloads}"))
     max_downloads = maxDownloadsCheck(feed_len, max_downloads)
     page_size = max_downloads
     podcast_title = d['feed']['title']
