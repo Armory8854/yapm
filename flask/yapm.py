@@ -1,3 +1,4 @@
+import time
 import schedule
 from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request
 from bin.new_podcast_download import downloadNewFunction
@@ -14,6 +15,9 @@ def create_app():
 
     initDB(db_file)
     initOPML(opml_file)
+
+    def downloadSchedule():
+        schedule.every().hour.do(downloadNewFunction, db_file)
 
     @app.route("/")
     def index(name=None):
@@ -90,5 +94,15 @@ def create_app():
         importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 
+
+    downloadSchedule()
+
+    def runScheduled():
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    import threading
+    threading.Thread(target=runScheduled).start()
 
     return app

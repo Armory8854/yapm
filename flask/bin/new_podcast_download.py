@@ -40,6 +40,7 @@ def newPodcastDownload(new_podcasts, download_dir, iteration):
     return episode_title, file_path
 
 def downloadNewFunction(db_file):
+    print("Attempting new downloads...")
     attempts = 0
     start_time = time.time()
     download_dir = gatherSettings(db_file)['download_dir']
