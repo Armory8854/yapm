@@ -1,7 +1,7 @@
 import time
 from .parser import dictCreation, urlPagination
 from .util import sanitizeNames
-from .db import insertEntry, downloadSearch, gatherPodcastSources, gatherSettings
+from .db import insertEntry, downloadSearch, gatherPodcastSources, gatherSettings, podcastDownloaded
 from .downloader import mp3Download
 
 def newPodcastDLInputs(db_file):
@@ -14,7 +14,6 @@ def newPodcastDLDB(db_file, settings_dict, urls):
     max_downloads = settings_dict['max_downloads']
     for url in urls:
         values = urlPagination(url, max_downloads)
-        print(values)
         entries = values[0]
         podcast_title = values[1]
         podcast_dir = str(download_dir + "/" + podcast_title)

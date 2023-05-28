@@ -1,3 +1,4 @@
+import threading
 import requests
 import os
 import time
@@ -13,14 +14,18 @@ def pathCreator(desired_path):
 
 def fileChecker(desired_file):
     if os.path.isfile(desired_file):
-        file_exists=True
+        print("File exists")
+        file_exists = True
     else:
-        file_exists=False
+        print("File no there")
+        file_exists = False
+    print(file_exists)
     return file_exists
 
 def opusConversion(input_file, output_file):
     audio = AudioSegment.from_mp3(input_file)
     audio.export(output_file, format='opus')
+    os.remove(input_file)
 
 def imageDownload(podcast_title, image_url):
     file_name = str("static/image/" + podcast_title + ".jpg")
@@ -42,13 +47,16 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
     while retries < max_retries:
         try:
             r = requests.get(episode_link)
-            fileChecker(file_path)
             if r.status_code == 200:
                 with open(file_path, "wb") as f:
                     f.write(r.content)
                 opus_file_path = str(file_path[:-4] + ".opus")
-                opusConversion(file_path, opus_file_path)
-                os.remove(file_path)
+                print("Checking file existence...")
+                if fileChecker(file_path) == True:
+                    opusThread = threading.Thread(target=opusConversion, args=(file_path, opus_file_path))
+                    opusThread.start()
+                else:
+                    print(f"{episode_title} did not download - perhaps its already been processed?")
                 return opus_file_path
             else:
                 print("Error, retrying......")
