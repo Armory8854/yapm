@@ -5,13 +5,13 @@ This project started out as a way for me to learn how to make a python applicati
 
 **This application is extremely opinionated**. The envisioned workflow for podcast downloading and processing is this:
 1. Add podcasts to a database
-  - Gather value information (Subscriptions, Lightning Payments mainly) to contribute to the podcasters
+    - Gather value information (Subscriptions, Lightning Payments mainly) to contribute to the podcasters
 2. Download X episodes of said podcast, if not all episodes.
 3. Convert the downloaded file to .opus
-  - I prefer the file format for multiple reasons that I can explain if anyone cares.
+    - I prefer the file format for multiple reasons that I can explain if anyone cares.
 4. Use a web based player to consume the podcasts.
-  - The player will feature links to subscribe to the podcast, or send a Lightning Payment.
-    + More than likely the Lightning payments will just utilize alby. I want to make this as frictionless as possible for me, and anyone else who decides to use the project.
+    - The player will feature links to subscribe to the podcast, or send a Lightning Payment.
+        + More than likely the Lightning payments will just utilize alby. I want to make this as frictionless as possible for me, and anyone else who decides to use the project.
 
 
 # Installation
@@ -54,12 +54,6 @@ $ gunicorn --bind "0.0.0.0:8000 \
   --worker-class gevent \
   --log-level info wsgi:app
 ```
-
-# TODO
-- [x] Implement proper playback of local files instead of streaming files.
-- [x] Store image files locally instead of pulling high res copies online
-- [ ] Docker/Podman compose
-  - Kind of overkill due to how basic the app is. However, compose is much more friendlier in general.
 
 # Special Thanks
 This program utilizes many different libraries, and I wanted to give them a special mention here. Without them, this project would have taken a lot longer to get where it is today:
