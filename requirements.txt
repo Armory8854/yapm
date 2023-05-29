@@ -8,3 +8,4 @@ gevent
 pyopml
 pydub
 python-podcastindex
+python-dateutil

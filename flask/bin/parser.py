@@ -1,5 +1,6 @@
 #from bin.settings import gatherURL
 from datetime import datetime
+import dateutil.parser
 from bs4 import BeautifulSoup
 import feedparser
 import json
@@ -19,7 +20,7 @@ def htmlPrettyPrint(html):
 
 def dateParser(date):
     date_string = date
-    date_obj = datetime.strptime(date_string, '%a, %d %b %Y %H:%M:%S %z')
+    date_obj = dateutil.parser.parse(date_string) 
     parsed_date = date_obj.strftime('%Y-%m-%d')
     return parsed_date
 
