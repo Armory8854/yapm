@@ -1,4 +1,5 @@
 import threading
+import multiprocessing
 import requests
 import os
 import time
@@ -14,18 +15,25 @@ def pathCreator(desired_path):
 
 def fileChecker(desired_file):
     if os.path.isfile(desired_file):
-        print("File exists")
         file_exists = True
     else:
-        print("File no there")
         file_exists = False
-    print(file_exists)
+    print(f"File exists: {file_exists}")
     return file_exists
 
-def opusConversion(input_file, output_file):
+def fileDownload(input_file, content):
+    with open(input_file, "wb") as f:
+        f.write(content)
+ 
+
+def opusConversion(content, input_file, opus_file_path):
+    fileDownload(input_file, content)
     audio = AudioSegment.from_mp3(input_file)
-    audio.export(output_file, format='opus')
-    os.remove(input_file)
+    audio.export(opus_file_path, format='opus')
+    try:
+        os.remove(input_file)
+    except FileNotFoundError as fnfe:
+        print(f"{input_file} Not Found: {fnfe}")
 
 def imageDownload(podcast_title, image_url):
     file_name = str("static/image/" + podcast_title + ".jpg")
@@ -42,21 +50,22 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
     retries = 0
     max_retries = 3
     retry_delay = 10
+    max_processes = 3
+    processes = []
     file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
     pathCreator(podcast_dir)
     while retries < max_retries:
         try:
             r = requests.get(episode_link)
+            content = r.content
+            opus_file_path = str(file_path[:-4] + ".opus")
             if r.status_code == 200:
-                with open(file_path, "wb") as f:
-                    f.write(r.content)
-                opus_file_path = str(file_path[:-4] + ".opus")
-                print("Checking file existence...")
-                if fileChecker(file_path) == True:
-                    opusThread = threading.Thread(target=opusConversion, args=(file_path, opus_file_path))
-                    opusThread.start()
-                else:
-                    print(f"{episode_title} did not download - perhaps its already been processed?")
+                for _ in range(max_processes):
+                    opusProcess = multiprocessing.Process(target=opusConversion, args=(content, file_path, opus_file_path))
+                    opusProcess.start()
+                    processes.append(opusProcess)
+                for _ in processes:
+                    opusProcess.join()
                 return opus_file_path
             else:
                 print("Error, retrying......")
@@ -66,5 +75,3 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
         time.sleep(retry_delay)
     print(f"Failed to download {episode_link} after {max_retries} retries.")
     return None
-            
-

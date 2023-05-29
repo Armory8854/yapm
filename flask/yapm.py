@@ -95,13 +95,17 @@ def create_app():
         return redirect(url_for('index'))
 
 
+    ## Hourly Downloads ##
+    # Initiate the hourly scheduler here
     downloadSchedule()
 
+    # Define how to run the scheduler here
     def runScheduled():
         while True:
             schedule.run_pending()
             time.sleep(1)
 
+    # Start the scheduler here
     import threading
     threading.Thread(target=runScheduled).start()
 
