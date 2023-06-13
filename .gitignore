@@ -14,3 +14,4 @@ api_config.ini
 podcasts/
 image/
 test/
+flask/UPDATE episodes SET episode_played=? WHERE podcast_title=?

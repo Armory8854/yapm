@@ -52,6 +52,7 @@ def initDB(db_file):
             download_dir TEXT,
             downloaded INTEGER,
             file_path TEXT,
+            episode_played INT, 
             UNIQUE(episode_title),
             FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
         );"""
@@ -87,8 +88,8 @@ def initDB(db_file):
 ## Inserts new *EPISODES* into the PODCAST table
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path):
     episode_description = str(episode_description).replace("\n","-")
-    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0"
+    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_played, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0", "0"
     executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    
@@ -150,7 +151,17 @@ def gatherDownloadedPodcasts(db_file):
     downloaded_podcasts = cur.fetchall()
     con.close()
     return downloaded_podcasts
-    
+
+def episodePlayedDB(db_file, episode_title):
+    # Just make sure the title is read as a string, just in case!
+    episode_title = str(episode_title)
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command = "UPDATE episodes SET episode_played=? WHERE episode_title=?"
+    cur.execute(command, (1, episode_title))
+    con.commit()
+    con.close()
+
 # Settings #
 ## Gather all settings as a dictionary for use anywhere
 def gatherSettings(db_file):

@@ -1,3 +1,4 @@
+// Organize vars here - currently very jank and unorgainzed
 var currentSong = 0;
 var isPlaying = false;
 var playbackPosition = 0;
@@ -11,11 +12,28 @@ var progress = document.getElementById('progress-bar')
 var progressBarContainer = document.getElementById('progress-bar-container')
 var duration = 0;
 
+// Add event listeners here, mainly for seek bar
 progressBarContainer.addEventListener('click', seekBar);
 
 function changePlaybackSpeed(speed) {
   player.rate(speed);
-}
+};
+
+function episodePlayedDB(episode_title) {
+  var postData = {
+    episode_title: episode_title,
+    episode_played: 1
+  };
+  var jsonData = JSON.stringify(postData);
+  fetch('/episode-played', {
+    method: 'POST',
+    headers: {
+      'Content-Type':'application/json'
+    },
+    body: jsonData
+  });
+  console.log(episode_title + 'Added to DB');
+};
 
 if (podcast) {
   filteredSongs = songs.filter(function(song) {
@@ -30,25 +48,23 @@ filteredSongs.sort(function(a, b) {
 });
 
 for (var i = 0; i < filteredSongs.length; i++) {
-    (function(index) {
-      var container = document.createElement('div');
-      var song = filteredSongs[i];
-      var artistElement = document.createElement('p');
-      var titleElement = document.createElement('p');
+  (function(index) {
+    var container = document.createElement('div');
+    var song = filteredSongs[i];
+    var artistElement = document.createElement('p');
+    var titleElement = document.createElement('p');
 
-      artistElement.textContent = song.artist;
-      artistElement.classList.add('artist');
-    
-      titleElement.textContent = song.date + ' - ' + song.name;
-      titleElement.classList.add('details');
-
-  	  container.setAttribute('class', 'song');
-	    container.setAttribute('onClick', 'nowPlaying()');
-      container.appendChild(artistElement);
-      container.appendChild(titleElement);
-      container.addEventListener('click', function() {
-	      playSong(index);
-        requestAnimationFrame(step);
+    artistElement.textContent = song.artist;
+    artistElement.classList.add('artist');
+    titleElement.textContent = song.date + ' - ' + song.name;
+    titleElement.classList.add('details');
+    container.setAttribute('class', 'song');
+    container.setAttribute('onClick', 'nowPlaying()');
+    container.appendChild(artistElement);
+    container.appendChild(titleElement);
+    container.addEventListener('click', function() {
+      playSong(index);
+      requestAnimationFrame(step);
     });
   	songList.appendChild(container);
     })(i);
@@ -71,7 +87,7 @@ var player = new Howl({
     },
     onload: function() {
       updateMetadata();
-    }
+    },
 });
 
 function updateMetadata() {
@@ -114,17 +130,22 @@ function playCurrentSong(playbackPosition) {
         var duration = player.duration();
         console.log('Song Duration: ' + duration);
 	      updateMetadata();
-	      if (!player.playing()) {
-		      player.play();
-		      player.rate(1);
-	      }
-	  },
-	  onplay: function() {
-      updateMetadata()
-      requestAnimationFrame(step)
+          if (!player.playing()) {
+            player.play();
+            player.rate(1);
+          }
+        },
+        onplay: function() {
+          updateMetadata()
+          requestAnimationFrame(step)
+        },
+        onend: function(episode_title) {
+          var currentSongData = filteredSongs[currentSong];
+          var episode_title = document.getElementById('song-title').textContent = currentSongData.name;
+          episodePlayedDB(episode_title)
+        }
+      });
     }
-  });
-}
 
 function pauseButton() {
     playbackPosition = player.seek();

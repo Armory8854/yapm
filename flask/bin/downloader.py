@@ -1,5 +1,3 @@
-import threading
-import multiprocessing
 import requests
 import os
 import time
@@ -50,8 +48,6 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
     retries = 0
     max_retries = 3
     retry_delay = 10
-    max_processes = 3
-    processes = []
     file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
     pathCreator(podcast_dir)
     while retries < max_retries:
@@ -60,12 +56,7 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
             content = r.content
             opus_file_path = str(file_path[:-4] + ".opus")
             if r.status_code == 200:
-                for _ in range(max_processes):
-                    opusProcess = multiprocessing.Process(target=opusConversion, args=(content, file_path, opus_file_path))
-                    opusProcess.start()
-                    processes.append(opusProcess)
-                for _ in processes:
-                    opusProcess.join()
+                opusConversion(content, file_path, opus_file_path)
                 return opus_file_path
             else:
                 print("Error, retrying......")

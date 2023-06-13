@@ -3,7 +3,7 @@ import schedule
 from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request
 from bin.new_podcast_download import downloadNewFunction
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource
+from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource, episodePlayedDB
 from bin.parser import indexMetaGathering, exportToOPML, initOPML, importOPML
 from bin.podcast_index import searchForPodcasts
 
@@ -68,6 +68,13 @@ def create_app():
     def download_new(name=None):
         downloadNewFunction(db_file)
         return redirect(url_for('index'))
+
+    @app.route("/episode-played",methods=['POST'])
+    def episode_played(name=None):
+        data = request.json.get
+        episode_title = data('episode_title')
+        episodePlayedDB(db_file, episode_title)
+        return(podcasts())
 
     @app.route("/new-source",methods=['POST'])
     def new_source(name=None):
