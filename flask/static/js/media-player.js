@@ -35,6 +35,8 @@ function episodePlayedDB(episode_title) {
   console.log(episode_title + 'Added to DB');
 };
 
+
+
 if (podcast) {
   filteredSongs = songs.filter(function(song) {
     return song.artist === podcast;
@@ -53,21 +55,37 @@ for (var i = 0; i < filteredSongs.length; i++) {
     var song = filteredSongs[i];
     var artistElement = document.createElement('p');
     var titleElement = document.createElement('p');
+    var playedElement = document.createElement('p');
 
     artistElement.textContent = song.artist;
     artistElement.classList.add('artist');
+
     titleElement.textContent = song.date + ' - ' + song.name;
     titleElement.classList.add('details');
+
+    playedElement.textContent = song.played;
+    playedElement.classList.add('played');
+
     container.setAttribute('class', 'song');
     container.setAttribute('onClick', 'nowPlaying()');
     container.appendChild(artistElement);
     container.appendChild(titleElement);
+    container.appendChild(playedElement);
     container.addEventListener('click', function() {
       playSong(index);
       requestAnimationFrame(step);
     });
   	songList.appendChild(container);
     })(i);
+};
+
+function checkPlayed(value) {
+  return value.played == "1"
+};
+
+function hidePlayed() {
+  let played_songs = filteredSongs.filter(checkPlayed)
+  console.log(played_songs)
 };
 
 function nowPlaying() {

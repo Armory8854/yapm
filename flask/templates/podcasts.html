@@ -2,37 +2,43 @@
 <html lang="en">
     <body>
       {% include "header.html" %}
-      <div class="media-player-container">
-	<div id="player-left-column">
-	  <div id="player-left-top">
-	    <img id="song-image" src="" alt="Song Cover Art">
-	    <select id="speed-select">
-	      <option value="1">1x</option>
-	      <option value="1.1">1.1x</option>
-	      <option value="1.25">1.25x</option>
-	      <option value="1.5">1.5x</option>
-	    </select>
-	    <span id="song-title"></span>
-		<div id="progress-bar-container">
-		  <div id="progress-bar"></div>
-		</div>
+	  <button style="button-style" onclick="hidePlayed()">Hide Played</button>
+	  <div class="media-player-container">
+		<div id="player-left-column">
+	  	  <div id="player-left-top">
+	      <img id="song-image" src="" alt="Song Cover Art">
+	      <select id="speed-select">
+	        <option value="1">1x</option>
+	        <option value="1.1">1.1x</option>
+	        <option value="1.25">1.25x</option>
+	        <option value="1.5">1.5x</option>
+	      </select>
+	      <span id="song-title"></span>
+		  <div id="progress-bar-container">
+		    <div id="progress-bar"></div>
+		  </div>
+	    </div>
+	    <div id="player-left-bottom">
+	      <button class="button-style" onclick="playPrevious()"><span class="material-icons">skip_previous</span></button>
+	      <button class="button-style" onclick="togglePlay()"><span class="material-icons">play_arrow</span><span class="material-icons">pause</span></button>
+	      <button class="button-style" onclick="playNext()"><span class="material-icons">skip_next</span></button>
+	    </div>
 	  </div>
-	  <div id="player-left-bottom">
-	    <button class="button-style" onclick="playPrevious()"><span class="material-icons">skip_previous</span></button>
-	    <button class="button-style" onclick="togglePlay()"><span class="material-icons">play_arrow</span><span class="material-icons">pause</span></button>
-	    <button class="button-style" onclick="playNext()"><span class="material-icons">skip_next</span></button>
+	  <div id="player-right-column">
+	    <div id="playlist">
+		  <div id="playlist-labels">
+			<p>Podcast</p>
+			<p>Title</p>
+			<p>Played</p>
+		  </div>
+	      <div id="song-list"></div>
+	    </div>
 	  </div>
-	</div>
-	<div id="player-right-column">
-	  <div id="playlist">
-	    <div id="song-list"></div>
-	  </div>
-	</div>
-</div>
-<div id="podcast-description">
+  </div>
+  <div id="podcast-description">
 	<h1 class="description-headline">Description</h1>
 	<span id="description-full-text"></span>
-</div>
+  </div>
       <script>
 		var songs = [
 	 	   {% for podcast in podcasts %}
@@ -43,7 +49,8 @@
 				"url": "{{ podcast[8] }}",
 				"cover_art_url": "{{ podcast[4] }}",
 				"date": "{{ podcast[3] }}",
-				"description": "{{ podcast[5] }}" 
+				"description": "{{ podcast[5] }}",
+				"played": "{{ podcast[9] }}"
 	    	}{% if not loop.last %},{% endif %}
 	    	{% endfor %}
 		];

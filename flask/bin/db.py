@@ -130,8 +130,6 @@ def newPodcastSourceDB(db_file, podcast_title, new_podcast_source):
     con.commit()
     con.close()
 
-
-
 ## Gather podcast source info from the DB
 def gatherPodcastSources(db_file):
     con = sqlite3.connect(db_file)
@@ -152,6 +150,7 @@ def gatherDownloadedPodcasts(db_file):
     con.close()
     return downloaded_podcasts
 
+## Random played podcast update
 def episodePlayedDB(db_file, episode_title):
     # Just make sure the title is read as a string, just in case!
     episode_title = str(episode_title)
