@@ -35,8 +35,6 @@ function episodePlayedDB(episode_title) {
   console.log(episode_title + 'Added to DB');
 };
 
-
-
 if (podcast) {
   filteredSongs = songs.filter(function(song) {
     return song.artist === podcast;
@@ -84,8 +82,16 @@ function checkPlayed(value) {
 };
 
 function hidePlayed() {
-  let played_songs = filteredSongs.filter(checkPlayed)
-  console.log(played_songs)
+  var song_elements = document.getElementsByClassName('song');
+  for (var i = song_elements.length - 1; i >= 0; i--) {
+    var played_element = song_elements[i].querySelector('.played');
+    console.log(played_element.textContent);
+    if (played_element.textContent.includes("1")) {
+      song_elements[i].remove();
+    } else {
+      console.log("Not played")  
+    }
+  }
 };
 
 function nowPlaying() {
