@@ -11,9 +11,13 @@ def newPodcastDLInputs(db_file):
 
 def newPodcastDLDB(db_file, settings_dict, urls):
     download_dir = settings_dict['download_dir']
+    download_all = settings_dict['download_all']
     max_downloads = settings_dict['max_downloads']
     for url in urls:
-        values = urlPagination(url, max_downloads)
+        if download_all == 1:
+            values = urlPagination(url, "all")
+        else:
+            values = urlPagination(url, max_downloads)
         entries = values[0]
         podcast_title = values[1]
         podcast_dir = str(download_dir + "/" + podcast_title)

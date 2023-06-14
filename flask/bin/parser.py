@@ -25,6 +25,8 @@ def dateParser(date):
     return parsed_date
 
 def maxDownloadsCheck(feed_len, max_downloads):
+    if max_downloads == "all":
+        max_downloads = feed_len
     if feed_len < max_downloads:
         max_downloads = feed_len
         print("New max Downloads: " + str(max_downloads))

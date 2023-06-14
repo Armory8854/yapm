@@ -153,11 +153,7 @@ function playCurrentSong(playbackPosition) {
 	    onload: function() {
         var duration = player.duration();
         console.log('Song Duration: ' + duration);
-	      updateMetadata();
-          if (!player.playing()) {
-            player.play();
-            player.rate(1);
-          }
+	        updateMetadata();
         },
         onplay: function() {
           updateMetadata()
