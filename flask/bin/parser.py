@@ -1,4 +1,3 @@
-#from bin.settings import gatherURL
 from datetime import datetime
 import dateutil.parser
 from bs4 import BeautifulSoup
@@ -32,12 +31,9 @@ def maxDownloadsCheck(feed_len, max_downloads):
         print("New max Downloads: " + str(max_downloads))
     return max_downloads
 
-# Looks ugly at first glance. How could I streamline this?
 def urlPagination(url, max_downloads, page_number=1):
     d = feedparser.parse(url)
-    print(url)
     feed_len = len(d['entries'])
-    print(str(f"Max DL: {max_downloads}"))
     max_downloads = maxDownloadsCheck(feed_len, max_downloads)
     page_size = max_downloads
     podcast_title = d['feed']['title']
@@ -120,7 +116,5 @@ def importOPML(db_file, opml_file):
     items = soup.find_all("outline")
     for item in items:
         podcast_url = item.get("xmlUrl")
-        print(podcast_url)
         podcast_title = item.get("title")
-        print(podcast_title)
         newPodcastSourceDB(db_file, podcast_title, podcast_url) 
