@@ -74,7 +74,36 @@ for (var i = 0; i < filteredSongs.length; i++) {
       requestAnimationFrame(step);
     });
   	songList.appendChild(container);
-    })(i);
+    // MediaSession stuff for phones
+    if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: song.name,
+      artist: song.artist,
+      artwork:[{ src: song.cover_art_url, sizes: '512x512', type: 'image/jpeg' }] 
+    })
+    navigator.mediaSession.setActionHandler("play",() => {
+      playButton()  
+    })
+    navigator.mediaSession.setActionHandler("pause",() => {
+      pauseButton()
+    })
+    navigator.mediaSession.setActionHandler("seekbackward",() => {
+      skipBackward()
+    })
+    navigator.mediaSession.setActionHandler("seekforward",() => {
+      skipForward()
+    })
+    navigator.mediaSession.setActionHandler("nexttrack", () => {
+      playNext()
+    })
+    navigator.mediaSession.setActionHandler("previoustrack", () => {
+      playPrevious()
+    })
+    navigator.mediaSession.setActionHandler("seekto", () => {
+      seekBar();
+    })
+  };
+  })(i);
 };
 
 function checkPlayed(value) {
@@ -229,3 +258,4 @@ speedSelect.addEventListener('change', function() {
   var selectedSpeed = parseFloat(speedSelect.value);
   changePlaybackSpeed(selectedSpeed);
 });
+
