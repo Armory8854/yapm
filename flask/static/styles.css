@@ -142,9 +142,15 @@ body {
     padding: 20px;
 }
 
+.played {
+    padding-left: 5px;
+}
+
 #description-full-text {
     margin-bottom: 20px;
     padding-bottom: 20px;
+    font-size: 18px;
+    line-height: 1.5em;
 }
 
 #player-left-column {
@@ -182,6 +188,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    height: 350px;
 }
 
 #playlist-labels {
@@ -222,12 +229,12 @@ body {
       padding: 0px;
       border: none;
   }
-
-  #player-left-column {
-    width: 300px;
+  
+  .button-style {
+    width: 35%;
   }
 
-  #player-left-bottom {
+  #player-left-bottom, #player-right-column {
     border-bottom: 2px solid white;
   }
 
@@ -237,6 +244,7 @@ body {
       padding: 20px;
       margin: auto;
       text-align: center;
+      width: 300px;
   }
 
   #song-title {
@@ -251,7 +259,7 @@ body {
   
   #player-right-column {
       display: block;
-      width: 80%;
+      width: 300px;
       max-width: 100%;
       margin: auto;
       text-align: center;
