@@ -178,6 +178,20 @@ function playButton() {
     player.play();
 }
 
+function skipForward() {
+  playbackPosition = player.seek();
+  forwardPosition = playbackPosition + 30;
+  player.seek(forwardPosition);
+  console.log("Skipping From ", playbackPosition, " To ", forwardPosition);
+}
+
+function skipBackward() {
+  playbackPosition = player.seek();
+  backwardPosition = playbackPosition - 30;
+  player.seek(backwardPosition);
+  console.log("Skipping From ", playbackPosition, " To ", backwardPosition);
+}
+
 function togglePlay() {
   if (player) {
     if (player.playing()) {
