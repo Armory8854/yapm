@@ -303,6 +303,9 @@ body {
 
 .search-result {
     display: flex;
+    border-bottom: 2px solid white;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 .search-left-column {
     display: flex;
@@ -320,3 +323,12 @@ body {
     align-self: center;
     width: 50%;
 }
+
+@media (max-width: 768px) {
+    .search-result {
+        flex-direction: column;
+    }
+    .search-left-column, .search-right-column {
+        width: 100%;
+    }
+} 
