@@ -100,7 +100,6 @@ def create_app():
         importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 
-
     ## Hourly Downloads ##
     # Initiate the hourly scheduler here
     downloadSchedule()
