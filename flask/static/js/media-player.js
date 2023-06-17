@@ -78,7 +78,6 @@ for (var i = 0; i < filteredSongs.length; i++) {
     if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: song.name,
-      artist: song.artist,
       artwork:[{ src: song.cover_art_url, sizes: '512x512', type: 'image/jpeg' }] 
     })
     navigator.mediaSession.setActionHandler("play",() => {
@@ -157,6 +156,7 @@ function playNext() {
 	    currentSong = 0; // Start from the beginning if reached the end
     };
     playCurrentSong(playbackPosition);
+    player.play()
 };
 
 function playPrevious() {
@@ -165,12 +165,14 @@ function playPrevious() {
     currentSong = filteredSongs.length - 1; // Go to the last song if reached the beginning
   };
   playCurrentSong(playbackPosition);
+  player.play();
 };
 
 function playSong(songIndex) {
     currentSong = songIndex;
     playCurrentSong(playbackPosition);
     speedSelect.value = '1';
+    player.play();
 }
 
 function playCurrentSong(playbackPosition) {
@@ -240,7 +242,6 @@ function step() {
       requestAnimationFrame(step);
   }
 }
-
 
 function seekBar(event) {
   var duration = player.duration();
