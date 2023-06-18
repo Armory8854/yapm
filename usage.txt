@@ -1,0 +1,8 @@
+Podman management shell script for YAPM. Flags you can pass below are:
+
+--start: just start the dang containers
+--stop: stop the container stack
+--build: Build the image
+--full-rebuild: Delete the image+database+podcasts, and then rebuild the image.
+--just-ntfy: Want to just run ntfy for fast tests? run this
+--help: Display this text

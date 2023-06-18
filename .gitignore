@@ -7,11 +7,11 @@ __pycache__
 *#
 \#*
 .#*
-podman-start.sh
 venv/
 *.opml
 api_config.ini
 podcasts/
 image/
 test/
-flask/UPDATE episodes SET episode_played=? WHERE podcast_title=?
+flask/
+ntfy*

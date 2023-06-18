@@ -24,19 +24,16 @@ First, clone the repo:
 
 Then, build the container.
 
-`$ podman build -t yapm .`
+`$ bash podman.sh --build`
 
-Finally, run it
+Then, run it.
 
 ```
-$ podman run -p 8000:8000 \
-  --volume /path/to/podcast/downloads:/app/static/podcasts:rw \
-  --volume /path/to/data:/app/data:rw \
-  localhost/yapm:latest
+$ bash podman.sh --start
 ```
 
 ## Virtual Environment
-Follow typical python virutal environment creation steps
+Follow typical python virtual environment creation steps
 
 ```
 $ git clone https://github.com/Armory8854/yapm.git && cd yapm
