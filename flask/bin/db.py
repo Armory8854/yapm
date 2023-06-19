@@ -59,7 +59,8 @@ def initDB(db_file):
         init_settings_command = """ CREATE TABLE IF NOT EXISTS settings(
             max_downloads INT,
             download_all INT,
-            download_dir STR
+            download_dir STR,
+            ntfy_url STR
         );"""
         init_lightning_command = """ CREATE TABLE IF NOT EXISTS lightning(
             podcast_title TEXT,
@@ -70,7 +71,7 @@ def initDB(db_file):
             UNIQUE(address),
             FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
         );"""
-        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir) VALUES(1,0,'static/podcasts');"
+        default_settings_command = "INSERT INTO settings(max_downloads, download_all, download_dir, ntfy_url) VALUES(1,0,'static/podcasts','http://127.0.0.1:8001');"
         init_commands = [ init_podcasts_command, init_episodes_command, init_lightning_command, init_settings_command ]
 
         for i in clear_tables:
@@ -179,9 +180,9 @@ def gatherSettings(db_file):
     return settings_dict
 
 ## Udate db, mainly for settings
-def updateDB(db_file, max_downloads, download_all, download_dir):
-    command = "UPDATE settings SET max_downloads=?, download_all=?, download_dir=?"
-    values = max_downloads, download_all, download_dir
+def updateDB(db_file, max_downloads, download_all, download_dir, ntfy_url):
+    command = "UPDATE settings SET max_downloads=?, download_all=?, download_dir=?, ntfy_url=?"
+    values = max_downloads, download_all, download_dir, ntfy_url
     executeDB(db_file, command, (values))
 
 ## Keep in mind this should remove all EPISODES too!

@@ -51,8 +51,9 @@ def create_app():
         css_url = url_for('static', filename='styles.css')
         media_player_url = url_for('static', filename='js/media-player.js')
         podcast_dir = gatherSettings(db_file)['download_dir']
+        ntfy_url = gatherSettings(db_file)['ntfy_url']
         print(downloaded_podcasts)
-        return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url, media_player_url=media_player_url, podcast_dir=podcast_dir)
+        return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url, media_player_url=media_player_url, podcast_dir=podcast_dir, ntfy_url=ntfy_url)
 
     @app.route("/settings-update", methods=[ 'POST' ])
     def settings_update(name=None):
@@ -60,7 +61,8 @@ def create_app():
         max_downloads = rfg('max_downloads')
         download_all = rfg('download_all')
         download_dir = rfg('download_dir')
-        updateDB(db_file, max_downloads, download_all, download_dir)
+        ntfy_url = rfg('ntfy_url')
+        updateDB(db_file, max_downloads, download_all, download_dir, ntfy_url)
         return redirect(url_for('settings'))
 
     @app.route("/download-new")
