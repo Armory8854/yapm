@@ -56,6 +56,11 @@ function delete-all() {
     rm -r "$YAPM_PODCAST_PATH"/*
 }
 
+## Dev Functions
+### Start flask dev server
+function dev-server() {
+    flask --app flask/yapm run
+}
 # If no flags, print help
 if [ $# -eq 0 ]; then
     usage
@@ -91,6 +96,9 @@ while [ "$1" != "" ]; do
         ;;
     --help)
         usage
+        ;;
+    --dev)
+        dev-server
         ;;
     esac
     shift
