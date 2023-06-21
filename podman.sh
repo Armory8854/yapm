@@ -27,6 +27,7 @@ function start-yapm() {
     --volume "$YAPM_DATA_PATH":/app/data:rw \
     --volume "$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
     --detach \
+    --restart on-failure \
     --name podman_yapm \
     localhost/yapm:latest
 }
@@ -36,6 +37,7 @@ function start-ntfy() {
     podman run -p "$NTFY_PORT":80 \
     --volume "$NTFY_DATA_PATH":/var/cache/ntfy:rw \
     --detach \
+    --restart on-failure \
     --name podman_ntfy \
     docker.io/binwiederhier/ntfy:v2.5.0 serve
 }
@@ -44,8 +46,8 @@ function start-ntfy() {
 function stop-all() {
     podman stop podman_yapm 
     podman stop podman_ntfy
-    podman rmi -f podman_yapm
-    podman rmi -f podman_ntfy
+    podman rm -f podman_yapm
+    podman rm -f podman_ntfy
 }
 
 ## Delete all images
