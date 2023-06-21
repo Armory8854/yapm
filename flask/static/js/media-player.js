@@ -53,7 +53,7 @@ for (var i = 0; i < filteredSongs.length; i++) {
     var song = filteredSongs[i];
     var artistElement = document.createElement('p');
     var titleElement = document.createElement('p');
-    var playedElement = document.createElement('p');
+    var playedElement = document.createElement('p')
 
     artistElement.textContent = song.artist;
     artistElement.classList.add('artist');
@@ -62,7 +62,6 @@ for (var i = 0; i < filteredSongs.length; i++) {
     titleElement.classList.add('details');
 
     playedElement.textContent = song.played;
-    playedElement.classList.add('played');
 
     container.setAttribute('class', 'song');
     container.setAttribute('onClick', 'nowPlaying()');
@@ -136,6 +135,7 @@ var player = new Howl({
     onplay: function() {
       updateMetadata();
     	requestAnimationFrame(step);
+      timeSpan();
     },
     onload: function() {
       updateMetadata();
@@ -182,13 +182,12 @@ function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
-        var duration = player.duration();
-        console.log('Song Duration: ' + duration);
 	        updateMetadata();
         },
         onplay: function() {
           updateMetadata()
           requestAnimationFrame(step)
+          timeSpan()
         },
         onend: function(episode_title) {
           var currentSongData = filteredSongs[currentSong];
@@ -249,9 +248,9 @@ function seekBar(event) {
   var containerWidth = progressBarContainer.clientWidth;
   var percentage = (offset / containerWidth) * 100;
   progress.style.width = percentage + '%';
-  var skipPercent = duration * ( percentage / 100 );
-  console.log(skipPercent);
-  player.seek(skipPercent);
+  var skipSeconds = duration * ( percentage / 100 );
+  console.log(skipSeconds);
+  player.seek(skipSeconds);
   player.play();
 }
 
@@ -260,3 +259,9 @@ speedSelect.addEventListener('change', function() {
   changePlaybackSpeed(selectedSpeed);
 });
 
+function timeSpan() {
+  var currentTime = setInterval(player.seek(), 500)
+  var duration = player.duration();
+  var timeElement = document.getElementById("time");
+  timeElement.innerHTML = currentTime + " / " + duration;
+}
