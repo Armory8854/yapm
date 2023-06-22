@@ -135,7 +135,7 @@ var player = new Howl({
     onplay: function() {
       updateMetadata();
     	requestAnimationFrame(step);
-      requestAnimationFrame(getCurrentTime)
+      timeSpan();
     },
     onload: function() {
       updateMetadata();
@@ -182,13 +182,16 @@ function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
+        var podName = filteredSongs[currentSong].name
         updateMetadata();
-        currentTime = 0
+        currentTime = localStorage.getItem(podName) || 0;
+        player.seek(currentTime)
       },
       onplay: function() {
         updateMetadata()
         requestAnimationFrame(step)
         setInterval(timeSpan, 500)
+        setInterval(storeTime, 500)
       },
       onend: function(episode_title) {
         var currentSongData = filteredSongs[currentSong];
@@ -287,4 +290,11 @@ function timeSpan() {
   var totalTimeElement = document.getElementById("total-time");
   currentTimeElement.innerHTML = currentTime ;
   totalTimeElement.innerHTML = totalTime;
+}
+
+function storeTime() {
+  var podName = filteredSongs[currentSong].name
+  var currentTime = player.seek()
+  localStorage.removeItem(podName)
+  localStorage.setItem(podName, currentTime)
 }
