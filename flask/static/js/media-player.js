@@ -76,7 +76,7 @@ for (var i = 0; i < filteredSongs.length; i++) {
     // MediaSession stuff for phones
     if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: song.name,
+      title: song.name, 
       artwork:[{ src: song.cover_art_url, sizes: '512x512', type: 'image/jpeg' }] 
     })
     navigator.mediaSession.setActionHandler("play",() => {
@@ -182,12 +182,12 @@ function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
-        var podName = filteredSongs[currentSong].name
         updateMetadata();
-        currentTime = localStorage.getItem(podName) || 0;
-        player.seek(currentTime)
       },
       onplay: function() {
+        var podName = filteredSongs[currentSong].name
+        currentTime = localStorage.getItem(podName) || 0;
+        player.seek(currentTime)
         updateMetadata()
         requestAnimationFrame(step)
         setInterval(timeSpan, 500)
