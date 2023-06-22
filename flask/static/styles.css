@@ -209,6 +209,10 @@ body {
     margin-bottom: 10px;
 }
 
+#time {
+    display: block;
+}
+
 #progress-bar {
   height: 100%; 
   background-color: #ff0000;

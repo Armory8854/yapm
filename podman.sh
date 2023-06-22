@@ -28,6 +28,8 @@ function start-yapm() {
     --volume "$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
     --detach \
     --restart on-failure \
+    --health-cmd 'curl http://localhost || exit 1' \
+    --health-interval '1m' \
     --name podman_yapm \
     localhost/yapm:latest
 }
@@ -46,8 +48,8 @@ function start-ntfy() {
 function stop-all() {
     podman stop podman_yapm 
     podman stop podman_ntfy
-    podman rm -f podman_yapm
-    podman rm -f podman_ntfy
+    podman rm podman_yapm
+    podman rm podman_ntfy
 }
 
 ## Delete all images

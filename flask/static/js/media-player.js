@@ -135,7 +135,7 @@ var player = new Howl({
     onplay: function() {
       updateMetadata();
     	requestAnimationFrame(step);
-      timeSpan();
+      requestAnimationFrame(getCurrentTime)
     },
     onload: function() {
       updateMetadata();
@@ -182,20 +182,22 @@ function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
-	        updateMetadata();
-        },
-        onplay: function() {
-          updateMetadata()
-          requestAnimationFrame(step)
-          timeSpan()
-        },
-        onend: function(episode_title) {
-          var currentSongData = filteredSongs[currentSong];
-          var episode_title = document.getElementById('song-title').textContent = currentSongData.name;
-          episodePlayedDB(episode_title)
-        }
-      });
-    }
+        updateMetadata();
+        currentTime = 0
+      },
+      onplay: function() {
+        updateMetadata()
+        requestAnimationFrame(step)
+        requestAnimationFrame(getCurrentTime)
+        setInterval(timeSpan, 500)
+      },
+      onend: function(episode_title) {
+        var currentSongData = filteredSongs[currentSong];
+        var episode_title = document.getElementById('song-title').textContent = currentSongData.name;
+        episodePlayedDB(episode_title)
+      }
+    });
+}
 
 function pauseButton() {
     playbackPosition = player.seek();
@@ -234,6 +236,14 @@ function togglePlay() {
   }
 }
 
+function getCurrentTime() {
+  var seek = player.seek() || 0;
+  currentTime = seek
+  if (player.playing()) {
+    requestAnimationFrame(getCurrentTime)
+  }
+}
+
 function step() {
   var seek = player.seek() || 0;
   progress.style.width = (((seek / player.duration()) * 100) || 0) + '%';
@@ -259,8 +269,9 @@ speedSelect.addEventListener('change', function() {
   changePlaybackSpeed(selectedSpeed);
 });
 
+
 function timeSpan() {
-  var currentTime = setInterval(player.seek(), 500)
+  var currentTime = player.seek();
   var duration = player.duration();
   var timeElement = document.getElementById("time");
   timeElement.innerHTML = currentTime + " / " + duration;
