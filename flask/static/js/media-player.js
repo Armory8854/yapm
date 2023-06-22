@@ -188,7 +188,6 @@ function playCurrentSong(playbackPosition) {
       onplay: function() {
         updateMetadata()
         requestAnimationFrame(step)
-        requestAnimationFrame(getCurrentTime)
         setInterval(timeSpan, 500)
       },
       onend: function(episode_title) {
@@ -238,10 +237,22 @@ function togglePlay() {
 
 function getCurrentTime() {
   var seek = player.seek() || 0;
-  currentTime = seek
-  if (player.playing()) {
-    requestAnimationFrame(getCurrentTime)
-  }
+  var currentMinutes = Math.floor(seek / 60);
+  var currentSeconds = Math.trunc(seek % 60);
+  var currentHours = Math.floor(currentMinutes / 60);
+  var currentMinutes = currentMinutes % 60;
+  var currentTime = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+  return currentTime
+}
+
+function getTotalTime() {
+  var totalTime = player.duration();
+  var totalMinutes = Math.floor(totalTime / 60);
+  var totalSeconds = Math.trunc(totalTime % 60);
+  var totalHours = Math.floor(totalMinutes / 60);
+  var totalMinutes = totalMinutes % 60;
+  var totalDuration = totalHours + ":" + totalMinutes + ":" + totalSeconds
+  return totalDuration
 }
 
 function step() {
@@ -269,10 +280,11 @@ speedSelect.addEventListener('change', function() {
   changePlaybackSpeed(selectedSpeed);
 });
 
-
 function timeSpan() {
-  var currentTime = player.seek();
-  var duration = player.duration();
-  var timeElement = document.getElementById("time");
-  timeElement.innerHTML = currentTime + " / " + duration;
+  var currentTime = getCurrentTime();
+  var totalTime = getTotalTime(); 
+  var currentTimeElement = document.getElementById("current-time");
+  var totalTimeElement = document.getElementById("total-time");
+  currentTimeElement.innerHTML = currentTime ;
+  totalTimeElement.innerHTML = totalTime;
 }

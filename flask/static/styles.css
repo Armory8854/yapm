@@ -213,6 +213,11 @@ body {
     display: block;
 }
 
+#current-time, #total-time {
+    display: inline-block;
+    width: 50px;
+}
+
 #progress-bar {
   height: 100%; 
   background-color: #ff0000;
