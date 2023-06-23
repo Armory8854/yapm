@@ -62,6 +62,7 @@ for (var i = 0; i < filteredSongs.length; i++) {
     titleElement.classList.add('details');
 
     playedElement.textContent = song.played;
+    playedElement.classList.add('played')
 
     container.setAttribute('class', 'song');
     container.setAttribute('onClick', 'nowPlaying()');
