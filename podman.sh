@@ -54,8 +54,8 @@ function stop-all() {
 
 ## Delete all images
 function delete-all() {
-    podman rm -f localhost/yapm:latest \
-    podman rm -f docker.io/binwiederhier/ntfy:v2.5.0 \
+    podman rm "localhost/yapm:latest" \
+    podman rm "docker.io/binwiederhier/ntfy:v2.5.0" \
     rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} \
     rm -r "$YAPM_PODCAST_PATH"/* \
     rm "$YAPM_IMAGE_PATH"/*

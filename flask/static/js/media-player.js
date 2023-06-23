@@ -167,7 +167,7 @@ function playCurrentSong(playbackPosition) {
         updateMetadata()
         requestAnimationFrame(step)
         setInterval(timeSpan, 500)
-        setInterval(storeTime, 500)
+        setInterval(storeTime, 10000)
       },
       onend: function(episode_title) {
         var currentSongData = filteredSongs[currentSong];
@@ -252,7 +252,6 @@ function seekBar(event) {
   var skipSeconds = duration * ( percentage / 100 );
   console.log(skipSeconds);
   player.seek(skipSeconds);
-  player.play();
 }
 
 speedSelect.addEventListener('change', function() {
@@ -281,7 +280,6 @@ function mediaSessionUpdateMeta() {
   var currentSongName = currentSongData.name;
   var currentSongImage = currentSongData.cover_art_url;
   var currentSongArtist = currentSongData.artist;
-  console.log("Ep: " + currentSongName + "/ Image: " + currentSongImage)
   navigator.mediaSession.metadata = new MediaMetadata({
     title: currentSongName,
     artist: currentSongArtist,
