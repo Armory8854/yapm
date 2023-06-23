@@ -74,34 +74,6 @@ for (var i = 0; i < filteredSongs.length; i++) {
       requestAnimationFrame(step);
     });
   	songList.appendChild(container);
-    // MediaSession stuff for phones
-    if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: song.name, 
-      artwork:[{ src: song.cover_art_url, sizes: '512x512', type: 'image/jpeg' }] 
-    })
-    navigator.mediaSession.setActionHandler("play",() => {
-      playButton()  
-    })
-    navigator.mediaSession.setActionHandler("pause",() => {
-      pauseButton()
-    })
-    navigator.mediaSession.setActionHandler("seekbackward",() => {
-      skipBackward()
-    })
-    navigator.mediaSession.setActionHandler("seekforward",() => {
-      skipForward()
-    })
-    navigator.mediaSession.setActionHandler("nexttrack", () => {
-      playNext()
-    })
-    navigator.mediaSession.setActionHandler("previoustrack", () => {
-      playPrevious()
-    })
-    navigator.mediaSession.setActionHandler("seekto", () => {
-      seekBar();
-    })
-  };
   })(i);
 };
 
@@ -145,9 +117,12 @@ var player = new Howl({
 
 function updateMetadata() {
   var currentSongData = filteredSongs[currentSong];
-  document.getElementById('song-title').textContent = currentSongData.name;
-  document.getElementById('song-image').src = currentSongData.cover_art_url;
+  var currentSongName = currentSongData.name;
+  var currentSongImage = currentSongData.cover_art_url;
+  document.getElementById('song-title').textContent = currentSongName;
+  document.getElementById('song-image').src = currentSongImage;
   podcastDescription.textContent = currentSongData.description;
+  return currentSongName, currentSongImage
 };
 
 
@@ -199,7 +174,8 @@ function playCurrentSong(playbackPosition) {
         var episode_title = document.getElementById('song-title').textContent = currentSongData.name;
         episodePlayedDB(episode_title)
       }
-    });
+    }
+  )
 }
 
 function pauseButton() {
@@ -299,3 +275,45 @@ function storeTime() {
   localStorage.removeItem(podName)
   localStorage.setItem(podName, currentTime)
 }
+
+function mediaSessionUpdateMeta() {
+  var currentSongData = filteredSongs[currentSong];
+  var currentSongName = currentSongData.name;
+  var currentSongImage = currentSongData.cover_art_url;
+  var currentSongArtist = currentSongData.artist;
+  console.log("Ep: " + currentSongName + "/ Image: " + currentSongImage)
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: currentSongName,
+    artist: currentSongArtist,
+    artwork:[{ src: currentSongImage, sizes: '512x512', type: 'image/jpeg' }] 
+  })
+  document.title = currentSongArtist + " - " + currentSongName;
+}
+
+// MediaSession stuff for phones
+if ("mediaSession" in navigator) {
+  mediaSessionUpdateMeta();
+  navigator.mediaSession.setActionHandler("play",() => {
+    playButton()
+    mediaSessionUpdateMeta()
+  })
+  navigator.mediaSession.setActionHandler("pause",() => {
+    pauseButton()
+  })
+  navigator.mediaSession.setActionHandler("seekbackward",() => {
+    skipBackward()
+  })
+  navigator.mediaSession.setActionHandler("seekforward",() => {
+    skipForward()
+  })
+  navigator.mediaSession.setActionHandler("nexttrack", () => {
+    playNext()
+    mediaSessionUpdateMeta()
+  })
+  navigator.mediaSession.setActionHandler("previoustrack", () => {
+    playPrevious()
+    mediaSessionUpdateMeta()
+  })
+  navigator.mediaSession.setActionHandler("seekto", (details) => {
+    seekBar(details.seekTime);
+  })}
