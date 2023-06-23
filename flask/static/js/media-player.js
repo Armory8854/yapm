@@ -313,5 +313,5 @@ if ("mediaSession" in navigator) {
     mediaSessionUpdateMeta()
   })
   navigator.mediaSession.setActionHandler("seekto", (details) => {
-    seekBar(details.seekTime);
+    player.seek(details.seekTime);
   })}
