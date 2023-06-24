@@ -50,8 +50,11 @@ def getRequest(r_url):
 def getPodDesc(podcast_title):
     search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
     json_response = getRequest(search_url)
-    description = json_response['feeds'][0]['description']
-    return description
+    try:
+        description = json_response['feeds'][0]['description']
+        return description
+    except IndexError:
+        print("Podcast has no description")
 
 def getValLink(podcast_title):
     search_url = str(f"https://api.podcastindex.org/api/1.0/search/bytitle?q={podcast_title}&pretty")
@@ -87,9 +90,12 @@ def getPodcastID(podcast_title):
     api_config = getConfigKeys(config_file)
     index = setIndex(api_config)
     results = index.search(query=podcast_title)
-    pod_id = results['feeds'][0]['id']
-    print(str("Podcast index id: " + str(pod_id)))
-    return pod_id
+    try:
+        pod_id = results['feeds'][0]['id']
+        print(str("Podcast index id: " + str(pod_id)))
+        return pod_id
+    except IndexError:
+        print(str("Podcast has no ID! Moving on..."))
 
 def getPodV4V(db_file, podcast_title, pod_id):
     print(db_file)
@@ -114,10 +120,10 @@ def getPodV4V(db_file, podcast_title, pod_id):
         newPodcastSourceLN(db_file, podcast_title, value_list)
     except KeyError as ke: 
         value_list = []
-        print(str(f"{pod_id} has no LN address. Key Error: {ke}"))
+        print(str(f"{pod_title} has no LN address. Key Error: {ke}"))
     except TypeError as te:
         value_list = []
-        print(str(f"{pod_id} has no ln address. Type Error: {te}"))
+        print(str(f"{pod_title} has no ln address. Type Error: {te}"))
     return value_list
 
 def newPodcastSourceLN(db_file, podcast_title, value_list):
