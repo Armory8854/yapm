@@ -2,12 +2,12 @@
 ## Env variable defaults
 ### YAPM
 YAPM_PORT=8000
-YAPM_DATA_PATH="$PWD"/flask/data
-YAPM_PODCAST_PATH="$PWD"/flask/static/podcasts
+YAPM_DATA_PATH="flask/data"
+YAPM_PODCAST_PATH="flask/static/podcasts"
 
 ### ntfy.sh
 NTFY_PORT=8001
-NTFY_DATA_PATH="$PWD/ntfy/data"
+NTFY_DATA_PATH="ntfy/data"
 
 ## Functions
 ### Help command
@@ -57,8 +57,14 @@ function delete-all() {
     podman rm "localhost/yapm:latest" 
     podman rm "docker.io/binwiederhier/ntfy:v2.5.0" 
     rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
-    rm -r "$YAPM_PODCAST_PATH"/* 
-    rm "$YAPM_IMAGE_PATH"/*
+    for podcast in $(ls "$YAPM_PODCAST_PATH");
+    do
+        rm -r "$podcast" 
+    done
+    for image in $(ls $"YAPM_IMAGE_PATH");
+    do
+        rm "$image"
+    done
 }
 
 ## Dev Functions
