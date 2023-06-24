@@ -45,6 +45,11 @@ def urlPagination(url, max_downloads, page_number=1):
 
 def dictCreation(entry, iteration):
     episode_link = entry['links'][1]['href']
+    print(episode_link)
+    # This is to make sure we catch unconventional enclosures
+    if "mp3" not in episode_link:
+        episode_link = entry['links'][0]['href']
+        print(episode_link)
     episode_title = entry['title']
     episode_date = dateParser(entry['published'])
     episode_description = htmlPrettyPrint(entry['description'])

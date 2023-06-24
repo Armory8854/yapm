@@ -62,7 +62,7 @@ def mp3Download(podcast_dir, episode_title, episode_link, episode_date):
                 print("Error, retrying......")
         except requests.exceptions.RequestException as e:
             print(f"Connection error: {e}. Retrying...")
-        retries += 1
-        time.sleep(retry_delay)
+            retries += 1
+            time.sleep(retry_delay)
     print(f"Failed to download {episode_link} after {max_retries} retries.")
     return None

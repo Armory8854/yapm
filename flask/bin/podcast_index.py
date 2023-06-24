@@ -120,10 +120,10 @@ def getPodV4V(db_file, podcast_title, pod_id):
         newPodcastSourceLN(db_file, podcast_title, value_list)
     except KeyError as ke: 
         value_list = []
-        print(str(f"{pod_title} has no LN address. Key Error: {ke}"))
+        print(str(f"{podcast_title} has no LN address. Key Error: {ke}"))
     except TypeError as te:
         value_list = []
-        print(str(f"{pod_title} has no ln address. Type Error: {te}"))
+        print(str(f"{podcast_title} has no ln address. Type Error: {te}"))
     return value_list
 
 def newPodcastSourceLN(db_file, podcast_title, value_list):

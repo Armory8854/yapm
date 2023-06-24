@@ -36,6 +36,7 @@ def newPodcastDownload(new_podcasts, download_dir, iteration):
     episode_title = new_podcasts[iteration][2]
     episode_link = new_podcasts[iteration][1]
     episode_date = new_podcasts[iteration][3]
+    print(f"{podcast_title} | {episode_title} | {episode_link} | {episode_date}")
     podcast_dir = str(download_dir + "/" + podcast_title)
     file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".mp3")
     print("Downloading " + podcast_title + " - " + episode_title)
@@ -62,9 +63,10 @@ def downloadNewFunction(db_file):
                 podcastDownloaded(db_file, episode_title, file_path)
                 ntfyDownloadFinished(ntfy_url, podcast_title, episode_title)
             break
-        except KeyError:
+        except KeyError as e:
             attempts += 1
             print("Key error occured - let's try again")
+            print(f"Error: {e}")
             ntfyDownloadFailed(ntfy_url)
     end_time = time.time()
     duration = end_time - start_time
