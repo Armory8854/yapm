@@ -72,6 +72,7 @@ for (var i = 0; i < filteredSongs.length; i++) {
     container.addEventListener('click', function() {
       playSong(index);
       requestAnimationFrame(step);
+      mediaSessionUpdateMeta()
     });
   	songList.appendChild(container);
   })(i);
@@ -159,11 +160,13 @@ function playCurrentSong(playbackPosition) {
 	    html5: true,
 	    onload: function() {
         updateMetadata();
+        mediaSessionUpdateMeta()
       },
       onplay: function() {
         var podName = filteredSongs[currentSong].name
         currentTime = localStorage.getItem(podName) || 0;
         player.seek(currentTime)
+        mediaSessionUpdateMeta()
         updateMetadata()
         requestAnimationFrame(step)
         setInterval(timeSpan, 500)
