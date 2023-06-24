@@ -39,7 +39,7 @@ function start-yapm() {
 ## start ntfy
 function start-ntfy() {
     podman run -p "$NTFY_PORT":80 \
-    --volume "$NTFY_DATA_PATH":/var/cache/ntfy:rw \
+    --volume "$PWD/$NTFY_DATA_PATH":/var/cache/ntfy:rw \
     --detach \
     --restart on-failure \
     --name podman_ntfy \
