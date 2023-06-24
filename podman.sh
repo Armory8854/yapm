@@ -4,6 +4,7 @@
 YAPM_PORT=8000
 YAPM_DATA_PATH="flask/data"
 YAPM_PODCAST_PATH="flask/static/podcasts"
+YAPM_IMAGE_PATH="flask/static/image"
 
 ### ntfy.sh
 NTFY_PORT=8001
@@ -61,7 +62,7 @@ function delete-all() {
     do
         rm -r "$podcast" 
     done
-    for image in $(ls $"YAPM_IMAGE_PATH");
+    for image in $(ls "$YAPM_IMAGE_PATH");
     do
         rm "$image"
     done
