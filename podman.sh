@@ -25,9 +25,9 @@ function build-yapm() {
 ## start YAPM
 function start-yapm() {
     podman run -p "$YAPM_PORT":8000 \
-    --volume "$YAPM_DATA_PATH":/app/data:rw \
-    --volume "$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
-    --volume "$YAPM_IMAGE_PATH":/app/static/image:rw \
+    --volume "$PWD/$YAPM_DATA_PATH":/app/data:rw \
+    --volume "$PWD/$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
+    --volume "$PWD/$YAPM_IMAGE_PATH":/app/static/image:rw \
     --detach \
     --restart on-failure \
     --health-cmd 'curl http://localhost || exit 1' \
