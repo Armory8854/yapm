@@ -59,11 +59,9 @@ function delete-all() {
     podman rm "localhost/yapm:latest" 
     podman rm "docker.io/binwiederhier/ntfy:v2.5.0" 
     rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
-    rm -r "$YAPM_PODCAST_PATH"/*
-    for image in $(ls "$YAPM_IMAGE_PATH");
-    do
-        rm "$YAPM_IMAGE_PATH"/"$image"
-    done
+    rm "$YAPM_PODCAST_PATH"/*/*.opus
+    rmdir "$YAPM_PODCASTPATH"/*
+    rm "$YAPM_IMAGE_PATH"/*.jpg
 }
 
 ## Dev Functions
