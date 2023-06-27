@@ -150,7 +150,6 @@ function playSong(songIndex) {
     currentSong = songIndex;
     playCurrentSong(playbackPosition);
     speedSelect.value = '1';
-    player.play();
 }
 
 async function playCurrentSong(playbackPosition) {

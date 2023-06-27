@@ -3,12 +3,12 @@
 ### YAPM
 YAPM_PORT=8000
 YAPM_DATA_PATH="flask/data"
-YAPM_PODCAST_PATH="flask/static/podcasts"
-YAPM_IMAGE_PATH="flask/static/image"
+YAPM_PODCAST_PATH="$PWD"/flask/static/podcasts
+YAPM_IMAGE_PATH="$PWD"/flask/static/image
 
 ### ntfy.sh
 NTFY_PORT=8001
-NTFY_DATA_PATH="ntfy/data"
+NTFY_DATA_PATH="$PWD"/ntfy/data
 
 ## Functions
 ### Help command
@@ -25,9 +25,9 @@ function build-yapm() {
 ## start YAPM
 function start-yapm() {
     podman run -p "$YAPM_PORT":8000 \
-    --volume "$PWD/$YAPM_DATA_PATH":/app/data:rw \
-    --volume "$PWD/$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
-    --volume "$PWD/$YAPM_IMAGE_PATH":/app/static/image:rw \
+    --volume "$YAPM_DATA_PATH":/app/data:rw \
+    --volume "$YAPM_PODCAST_PATH":/app/static/podcasts:rw \
+    --volume "$YAPM_IMAGE_PATH":/app/static/image:rw \
     --detach \
     --restart on-failure \
     --health-cmd 'curl http://localhost || exit 1' \
@@ -39,7 +39,7 @@ function start-yapm() {
 ## start ntfy
 function start-ntfy() {
     podman run -p "$NTFY_PORT":80 \
-    --volume "$PWD/$NTFY_DATA_PATH":/var/cache/ntfy:rw \
+    --volume "$NTFY_DATA_PATH":/var/cache/ntfy:rw \
     --detach \
     --restart on-failure \
     --name podman_ntfy \
@@ -61,11 +61,11 @@ function delete-all() {
     rm "$PWD/$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
     for podcast in $(ls "$YAPM_PODCAST_PATH");
     do
-        rm -r "$podcast" 
+        rm -r "$PWD"/"$YAPM_DATA_PATH"/"$podcast" 
     done
     for image in $(ls "$YAPM_IMAGE_PATH");
     do
-        rm "$image"
+        rm "$YAPM_IMAGE_PATH"/"$image"
     done
 }
 
