@@ -106,13 +106,13 @@ function nowPlaying() {
 var player = new Howl({
     src: [filteredSongs[currentSong].url],
     html5: true,
-    onplay: function() {
-      updateMetadata();
-    	requestAnimationFrame(step);
-      timeSpan();
-    },
     onload: function() {
+      mediaSessionUpdateMeta()
       updateMetadata();
+    },
+    onplay: function() {
+      requestAnimationFrame(step);
+      timeSpan();
     },
 });
 
@@ -120,6 +120,7 @@ function updateMetadata() {
   var currentSongData = filteredSongs[currentSong];
   var currentSongName = currentSongData.name;
   var currentSongImage = currentSongData.cover_art_url;
+
   document.getElementById('song-title').textContent = currentSongName;
   document.getElementById('song-image').src = currentSongImage;
   podcastDescription.textContent = currentSongData.description;
@@ -132,7 +133,7 @@ function playNext() {
     if (currentSong >= filteredSongs.length) {
 	    currentSong = 0; // Start from the beginning if reached the end
     };
-    playCurrentSong(playbackPosition);
+    playCurrentSong();
     player.play()
 };
 
@@ -141,7 +142,7 @@ function playPrevious() {
   if (currentSong < 0) {
     currentSong = filteredSongs.length - 1; // Go to the last song if reached the beginning
   };
-  playCurrentSong(playbackPosition);
+  playCurrentSong();
   player.play();
 };
 
@@ -152,25 +153,29 @@ function playSong(songIndex) {
     player.play();
 }
 
-function playCurrentSong(playbackPosition) {
+async function playCurrentSong(playbackPosition) {
     player.stop(); // Stop the currently playing song
     player.unload(); // Unload the current song
+    playbackPosition = await getCurrentTimeDB()
+    console.log("playbackPostion: " + playbackPosition)
     player = new Howl({
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
         updateMetadata();
         mediaSessionUpdateMeta()
+        player.play()
       },
       onplay: function() {
-        var podName = filteredSongs[currentSong].name
-        currentTime = localStorage.getItem(podName) || 0;
-        player.seek(currentTime)
+        console.log("Onplay position: " + playbackPosition)
+        player.seek(playbackPosition); 
         mediaSessionUpdateMeta()
-        updateMetadata()
         requestAnimationFrame(step)
-        setInterval(timeSpan, 500)
-        setInterval(storeTime, 10000)
+        requestAnimationFrame(timeSpan)
+        intervalId = setInterval(storeTime, 1000)
+      },
+      onpause: function() {
+        clearInterval(intervalId) 
       },
       onend: function(episode_title) {
         var currentSongData = filteredSongs[currentSong];
@@ -187,7 +192,7 @@ function pauseButton() {
     player.pause();
 }
 
-function playButton() {
+function playButton(playbackPosition) {
     player.seek(playbackPosition);
     player.play();
 }
@@ -206,7 +211,7 @@ function skipBackward() {
   console.log("Skipping From ", playbackPosition, " To ", backwardPosition);
 }
 
-function togglePlay() {
+function togglePlay(playbackPosition) {
   if (player) {
     if (player.playing()) {
       playbackPosition = player.seek();
@@ -218,14 +223,14 @@ function togglePlay() {
   }
 }
 
-function getCurrentTime() {
+function getCurrentTimeSpan() {
   var seek = player.seek() || 0;
   var currentMinutes = Math.floor(seek / 60);
   var currentSeconds = Math.trunc(seek % 60);
   var currentHours = Math.floor(currentMinutes / 60);
   var currentMinutes = currentMinutes % 60;
-  var currentTime = currentHours + ":" + currentMinutes + ":" + currentSeconds;
-  return currentTime
+  var currentTimeSpan = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+  return currentTimeSpan
 }
 
 function getTotalTime() {
@@ -263,19 +268,51 @@ speedSelect.addEventListener('change', function() {
 });
 
 function timeSpan() {
-  var currentTime = getCurrentTime();
+  var currentTimeSpan = getCurrentTimeSpan();
   var totalTime = getTotalTime(); 
   var currentTimeElement = document.getElementById("current-time");
   var totalTimeElement = document.getElementById("total-time");
-  currentTimeElement.innerHTML = currentTime ;
+  currentTimeElement.innerHTML = currentTimeSpan ;
   totalTimeElement.innerHTML = totalTime;
+  requestAnimationFrame(timeSpan)
 }
 
 function storeTime() {
-  var podName = filteredSongs[currentSong].name
-  var currentTime = player.seek()
-  localStorage.removeItem(podName)
-  localStorage.setItem(podName, currentTime)
+  var episode_title = filteredSongs[currentSong].name
+  var currentTimeStore = player.seek()
+  console.log("Storetime Current Time Pre Post: " + currentTimeStore)
+  var postData = {
+    episode_title: episode_title,
+    current_time: currentTimeStore 
+  }
+  var jsonData = JSON.stringify(postData);
+  console.log(jsonData)
+  fetch('/current-time', {
+    method: 'POST',
+    headers: {
+      'Content-Type':'application/json'
+    },
+    body: jsonData
+  }) 
+}
+
+async function getCurrentTimeDB() {
+  var episode_title = filteredSongs[currentSong].name
+  var url = '/current-time?episode_title=' + encodeURIComponent(episode_title);
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const myJson = await response.json();
+    playbackPosition = myJson['current_time_get']
+    return playbackPosition 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 function mediaSessionUpdateMeta() {
@@ -317,4 +354,5 @@ if ("mediaSession" in navigator) {
   })
   navigator.mediaSession.setActionHandler("seekto", (details) => {
     player.seek(details.seekTime);
-  })}
+  })
+}

@@ -58,7 +58,7 @@ function stop-all() {
 function delete-all() {
     podman rm "localhost/yapm:latest" 
     podman rm "docker.io/binwiederhier/ntfy:v2.5.0" 
-    rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
+    rm "$PWD/$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
     for podcast in $(ls "$YAPM_PODCAST_PATH");
     do
         rm -r "$podcast" 

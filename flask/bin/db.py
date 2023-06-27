@@ -1,9 +1,12 @@
 import sqlite3
+import time
+import math
 from pathlib import Path
 from .downloader import imageDownload
 from .podcast_index import getPodDesc, getPodcastID, getPodV4V, getFundingLink
 import feedparser
 
+sqlite3.enable_callback_tracebacks(True)
 # General DB Functions, mainly executeDB #
 ## Generic sql query function
 def executeDB(db_file,command,values=None,):
@@ -52,7 +55,8 @@ def initDB(db_file):
             download_dir TEXT,
             downloaded INTEGER,
             file_path TEXT,
-            episode_played INT, 
+            episode_played INT,
+            current_progress INT, 
             UNIQUE(episode_title),
             FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
         );"""
@@ -89,8 +93,8 @@ def initDB(db_file):
 ## Inserts new *EPISODES* into the PODCAST table
 def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path):
     episode_description = str(episode_description).replace("\n","-")
-    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_played, downloaded) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0", "0"
+    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_played, downloaded, current_progress) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0", "0", "0"
     executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    
@@ -151,7 +155,7 @@ def gatherDownloadedPodcasts(db_file):
     con.close()
     return downloaded_podcasts
 
-## Random played podcast update
+## Javascript DB Functions 
 def episodePlayedDB(db_file, episode_title):
     # Just make sure the title is read as a string, just in case!
     episode_title = str(episode_title)
@@ -161,6 +165,29 @@ def episodePlayedDB(db_file, episode_title):
     cur.execute(command, (1, episode_title))
     con.commit()
     con.close()
+
+def currentTimeDB(db_file, episode_title, current_time_post):
+    episode_title = str(episode_title)
+    current_time_post = int(current_time_post) 
+    print(f"Current Time: {current_time_post}")
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command = "UPDATE episodes SET current_progress=? WHERE episode_title=?"
+    cur.execute(command, (current_time_post, episode_title))
+    con.commit()
+    con.close()
+
+def getCurrentTimeDB(db_file, episode_title):
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command = "SELECT current_progress FROM episodes WHERE episode_title=?"
+    cur.execute(command, (episode_title,))
+    result = cur.fetchone()
+    print(result)
+    current_time_get = result[0]
+    print(current_time_get)
+    con.close()
+    return current_time_get
 
 # Settings #
 ## Gather all settings as a dictionary for use anywhere

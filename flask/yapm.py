@@ -1,9 +1,9 @@
 import time
 import schedule
-from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request
+from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request, jsonify
 from bin.new_podcast_download import downloadNewFunction
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource, episodePlayedDB
+from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource, episodePlayedDB, currentTimeDB, getCurrentTimeDB
 from bin.parser import indexMetaGathering, exportToOPML, initOPML, importOPML
 from bin.podcast_index import searchForPodcasts
 
@@ -76,6 +76,21 @@ def create_app():
         episode_title = data('episode_title')
         episodePlayedDB(db_file, episode_title)
         return(podcasts())
+
+    @app.route("/current-time", methods=['POST', 'GET'])
+    def current_time(name=None):
+        if request.method == 'POST':
+            data = request.json.get
+            episode_title = data('episode_title')
+            current_time_post = data('current_time')
+            print(episode_title, current_time_post)
+            currentTimeDB(db_file, episode_title, current_time_post)
+            return jsonify(current_time_post=current_time_post)
+        if request.method == 'GET':
+            episode_title = request.args.get('episode_title')
+            current_time_get = getCurrentTimeDB(db_file, episode_title)
+            print(current_time_get)
+            return jsonify(current_time_get=current_time_get)
 
     @app.route("/new-source",methods=['POST'])
     def new_source(name=None):
