@@ -161,13 +161,12 @@ async function playCurrentSong(playbackPosition) {
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
-        updateMetadata();
+        console.log("Onplay position: " + playbackPosition)
+        player.seek(playbackPosition);        updateMetadata();
         mediaSessionUpdateMeta()
         player.play()
       },
       onplay: function() {
-        console.log("Onplay position: " + playbackPosition)
-        player.seek(playbackPosition); 
         mediaSessionUpdateMeta()
         requestAnimationFrame(step)
         requestAnimationFrame(timeSpan)
@@ -210,13 +209,13 @@ function skipBackward() {
   console.log("Skipping From ", playbackPosition, " To ", backwardPosition);
 }
 
-function togglePlay(playbackPosition) {
+function togglePlay() {
   if (player) {
     if (player.playing()) {
-      playbackPosition = player.seek();
+      pausedPosition = player.seek();
       player.pause();
     } else {
-      player.seek(playbackPosition);
+      player.seek(pausedPosition);
       player.play();
     }
   }
