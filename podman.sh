@@ -2,7 +2,7 @@
 ## Env variable defaults
 ### YAPM
 YAPM_PORT=8000
-YAPM_DATA_PATH="flask/data"
+YAPM_DATA_PATH="$PWD"/flask/data
 YAPM_PODCAST_PATH="$PWD"/flask/static/podcasts
 YAPM_IMAGE_PATH="$PWD"/flask/static/image
 
@@ -58,10 +58,8 @@ function stop-all() {
 function delete-all() {
     podman rm "localhost/yapm:latest" 
     podman rm "docker.io/binwiederhier/ntfy:v2.5.0" 
-    rm "$PWD/$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
-    for podcast in $(ls "$YAPM_PODCAST_PATH");
-    do
-        rm -r "$PWD"/"$YAPM_DATA_PATH"/"$podcast" 
+    rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
+    rm -r "$YAPM_PODCAST_PATH"/*
     done
     for image in $(ls "$YAPM_IMAGE_PATH");
     do
