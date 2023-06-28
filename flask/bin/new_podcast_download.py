@@ -23,9 +23,9 @@ def newPodcastDLDB(db_file, settings_dict, urls):
         podcast_dir = str(download_dir + "/" + podcast_title)
         podcast_image = str("static/image/" + podcast_title + ".jpg")
         for i, entry in enumerate(entries):
-            episode_link, episode_title, episode_date, episode_description = dictCreation(entry, i)
+            episode_link, episode_title, episode_date, episode_description, episode_chapters = dictCreation(entry, i)
             file_path = str(podcast_dir + "/" + episode_date + "-" + sanitizeNames(episode_title) + ".opus")
-            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image, episode_description, file_path) 
+            insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, podcast_image, episode_description, file_path, episode_chapters) 
 
     new_podcasts = downloadSearch(db_file)
     return new_podcasts

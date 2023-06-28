@@ -3,7 +3,7 @@ import schedule
 from flask import Flask, render_template, request, url_for, flash, redirect, send_file, request, jsonify
 from bin.new_podcast_download import downloadNewFunction
 from bin.new_podcast_source import newPodcastSource
-from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource, episodePlayedDB, currentTimeDB, getCurrentTimeDB
+from bin.db import initDB, gatherSettings, updateDB, gatherDownloadedPodcasts, removePodcastSource, episodePlayedDB, currentTimeDB, getCurrentTimeDB, getChaptersDB
 from bin.parser import indexMetaGathering, exportToOPML, initOPML, importOPML
 from bin.podcast_index import searchForPodcasts
 
@@ -32,6 +32,7 @@ def create_app():
         css_url = url_for('static', filename='styles.css')
         return render_template('settings.html', name=name, css_url=css_url, settings=settings_dict)
 
+    # Post and get could be used here for searching and indexing
     @app.route("/search")
     def search(name=None):
         css_url = url_for('static', filename='styles.css')
@@ -55,6 +56,8 @@ def create_app():
         print(downloaded_podcasts)
         return render_template('podcasts.html', podcasts=downloaded_podcasts, css_url=css_url, media_player_url=media_player_url, podcast_dir=podcast_dir, ntfy_url=ntfy_url)
 
+    # Could get a GET request to change how settings are queried
+    # Not as urgent though compared to other sections
     @app.route("/settings-update", methods=[ 'POST' ])
     def settings_update(name=None):
         rfg = request.form.get
@@ -92,6 +95,8 @@ def create_app():
             print(current_time_get)
             return jsonify(current_time_get=current_time_get)
 
+    # I need to combine new & remove source to use a method variable
+    # That said method should be "add" or "remove", with the method changing logic
     @app.route("/new-source",methods=['POST'])
     def new_source(name=None):
         new_podcast_source = request.form.get('podcast-rss-entry')
@@ -104,6 +109,8 @@ def create_app():
         removePodcastSource(db_file, remove_podcast_source)
         return redirect(url_for('index'))
 
+    # I need to compbine opml export & import
+    # Export could be a GET request
     @app.route("/opml-export")
     def opml_export(name=None):
         exportToOPML(db_file, opml_file)
@@ -117,6 +124,16 @@ def create_app():
         importOPML(db_file, opml_file)
         return redirect(url_for('index'))
 
+    # Future proofing this for any possible future additions
+    @app.route("/episode-metadata",methods=['GET'])
+    def episode_metadata(name=None):
+        if request.method == 'GET':
+            metadata_query = request.args.get('query')
+            episode_title = request.args.get('episode-title')
+            if metadata_query == 'chapters': 
+                chapters = getChaptersDB(db_file, episode_title)
+                return jsonify(episode_title=episode_title, episode_chapters=chapters)
+    
     ## Hourly Downloads ##
     # Initiate the hourly scheduler here
     downloadSchedule()

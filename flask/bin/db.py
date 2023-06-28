@@ -57,6 +57,7 @@ def initDB(db_file):
             file_path TEXT,
             episode_played INT,
             current_progress INT, 
+            episode_chapters BLOB,
             UNIQUE(episode_title),
             FOREIGN KEY(podcast_title) REFERENCES podcasts(podcast_title)
         );"""
@@ -91,10 +92,10 @@ def initDB(db_file):
 
 # New Podcast functions #
 ## Inserts new *EPISODES* into the PODCAST table
-def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path):
+def insertEntry(db_file, podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_chapters):
     episode_description = str(episode_description).replace("\n","-")
-    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_played, downloaded, current_progress) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0", "0", "0"
+    command = "INSERT OR IGNORE INTO episodes(podcast_title, episode_link, episode_title, episode_date, episode_image, episode_description, file_path, episode_played, downloaded, current_progress, episode_chapters) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    values = podcast_title, episode_link, episode_title, episode_date, episode_image, str(episode_description), str(file_path), "0", "0", "0", episode_chapters
     executeDB(db_file, command, values)
 
 ## Checks for new possible downloads    
@@ -188,6 +189,17 @@ def getCurrentTimeDB(db_file, episode_title):
     print(current_time_get)
     con.close()
     return current_time_get
+
+def getChaptersDB(db_file, episode_title):
+    con = sqlite3.connect(db_file)
+    cur = con.cursor()
+    command = "SELECT episode_chapters FROM episodes WHERE episode_title=?"
+    cur.execute(command, (episode_title,))
+    result = cur.fetchone()[0]
+    print(result)
+    result = result.decode('utf-8') 
+    con.close()
+    return result
 
 # Settings #
 ## Gather all settings as a dictionary for use anywhere

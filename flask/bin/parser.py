@@ -3,6 +3,7 @@ import dateutil.parser
 from bs4 import BeautifulSoup
 import feedparser
 import json
+import requests
 from opml import OpmlDocument
 from pathlib import Path
 from .db import gatherPodcastSources, newPodcastSourceDB
@@ -44,6 +45,7 @@ def urlPagination(url, max_downloads, page_number=1):
     return entries, podcast_title, podcast_image
 
 def dictCreation(entry, iteration):
+    print(entry)
     episode_link = entry['links'][1]['href']
     print(episode_link)
     # This is to make sure we catch unconventional enclosures
@@ -53,7 +55,18 @@ def dictCreation(entry, iteration):
     episode_title = entry['title']
     episode_date = dateParser(entry['published'])
     episode_description = htmlPrettyPrint(entry['description'])
-    return episode_link, episode_title, episode_date, episode_description
+    # Podcasts have chapters you know! but only sometimes :(
+    try:
+        episode_chapters_url = entry['podcast_chapters']['url']
+        episode_chapters_response = requests.get(episode_chapters_url)
+        episode_chapters_json = episode_chapters_response.json()['chapters']
+        episode_chapters = bytes(json.dumps(episode_chapters_json),'utf-8')
+        print(episode_chapters)
+    except KeyError as e:
+        print(f"{episode_title} has no chapters, or an error occured")
+        print(f"{e}")
+        episode_chapters = ""
+    return episode_link, episode_title, episode_date, episode_description, episode_chapters
 
 # This may need looked over again, it seems a lot more complicated than needed. 
 def indexMetaGathering(db_file):
