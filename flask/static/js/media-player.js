@@ -171,15 +171,16 @@ async function playCurrentSong(playbackPosition) {
         updateMetadata();
         mediaSessionUpdateMeta()
         player.play()
+        updateChapter(playbackPosition)
       },
       onplay: function() {
         mediaSessionUpdateMeta()
-        updateChapter(playbackPosition)
         requestAnimationFrame(step)
         requestAnimationFrame(timeSpan)
         intervalId = setInterval(storeTime, 1000)
       },
       onpause: function() {
+        pausedPosition = player.seek();
         clearInterval(intervalId) 
       },
       onend: function(episode_title) {
@@ -216,7 +217,6 @@ function skipBackward() {
 function togglePlay() {
   if (player) {
     if (player.playing()) {
-      pausedPosition = player.seek();
       player.pause();
     } else {
       if (pausedPosition > 0) {
@@ -266,6 +266,7 @@ function seekBar(event) {
   progress.style.width = percentage + '%';
   var skipSeconds = duration * ( percentage / 100 );
   player.seek(skipSeconds);
+  pausedPosition = player.seek()
   updateChapter(skipSeconds);
 }
 
@@ -345,16 +346,18 @@ function nextChapterSkip() {
     currentChapterIndex = chaptersLength - 1
   }
   var startTime = episodeChapters[currentChapterIndex]['startTime']
+  console.log(currentChapterIndex)
   player.seek(startTime)
   player.play()
 }
 
 function previousChapterSkip() {
   currentChapterIndex--
-  if (currentChapterIndex < 0) {
+  if (currentChapterIndex <= 0) {
     currentChapterIndex = 0 
   }
   var startTime = episodeChapters[currentChapterIndex]['startTime']
+  console.log(currentChapterIndex)
   player.seek(startTime)
   player.play()
 }
