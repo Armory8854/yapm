@@ -111,14 +111,18 @@ var player = new Howl({
       episodeChapters = await getEpisodeChapters()
       mediaSessionUpdateMeta()
       updateMetadata();
+      timeSpan();
+      updateChapter(playbackPosition)
     },
     onplay: function() {
       requestAnimationFrame(step);
-      timeSpan();
+      intervalId = setInterval(storeTime, 1000);
+      requestAnimationFrame(chapterSpanFunction)
     },
     onpause: function() {
       pausedPosition = player.seek();
       updateChapter(pausedPosition);
+      clearInterval(intervalId)
     }
 });
 
@@ -177,6 +181,7 @@ async function playCurrentSong(playbackPosition) {
         mediaSessionUpdateMeta()
         requestAnimationFrame(step)
         requestAnimationFrame(timeSpan)
+        requestAnimationFrame(chapterSpanFunction)
         intervalId = setInterval(storeTime, 1000)
       },
       onpause: function() {
@@ -293,13 +298,17 @@ function storeTime() {
     current_time: currentTimeStore 
   }
   var jsonData = JSON.stringify(postData);
-  fetch('/current-time', {
-    method: 'POST',
-    headers: {
-      'Content-Type':'application/json'
-    },
-    body: jsonData
-  }) 
+  if (player.playing) {
+    fetch('/current-time', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json'
+      },
+      body: jsonData
+    })
+  } else {
+    return 
+  }
 }
 
 async function getCurrentTimeDB() {
@@ -362,12 +371,25 @@ function previousChapterSkip() {
   player.play()
 }
 
+function chapterSpanFunction() {
+  chapterSpan = document.getElementById("chapter-name")
+  if (episodeChapters.length > 0) {
+    chapterSpan.innerHTML = "Chapter " + currentChapterIndex + ": " + episodeChapters[currentChapterIndex]['title']
+    requestAnimationFrame(chapterSpanFunction)
+  } else {
+    chapterSpan.innerHTML = "No Chapters Available"   
+    requestAnimationFrame(chapterSpanFunction)
+  }
+}
+
 function updateChapter(skipSeconds) {
   chaptersLength = episodeChapters.length
+  chapterSpan = document.getElementById("chapter-name")
   if (chaptersLength > 0) {
     for (var i = 0; i < chaptersLength; i++) {
       if (skipSeconds >= episodeChapters[i]['startTime']) {
         currentChapterIndex = i;
+        chapterSpan.innerHTML = "Chapter " + currentChapterIndex + ": " + episodeChapters[i]['title']
       } else {
         break
       }
