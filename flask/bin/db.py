@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import math
+import json
 from pathlib import Path
 from .downloader import imageDownload
 from .podcast_index import getPodDesc, getPodcastID, getPodV4V, getFundingLink
@@ -195,9 +196,10 @@ def getChaptersDB(db_file, episode_title):
     cur = con.cursor()
     command = "SELECT episode_chapters FROM episodes WHERE episode_title=?"
     cur.execute(command, (episode_title,))
-    result = cur.fetchone()[0]
+    result = cur.fetchone()
     print(result)
-    result = result.decode('utf-8') 
+    result = json.loads(result[0])
+    print(result)
     con.close()
     return result
 

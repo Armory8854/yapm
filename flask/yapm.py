@@ -130,10 +130,10 @@ def create_app():
         if request.method == 'GET':
             metadata_query = request.args.get('query')
             episode_title = request.args.get('episode-title')
+            chapters = ""
             if metadata_query == 'chapters': 
                 chapters = getChaptersDB(db_file, episode_title)
-                return jsonify(episode_title=episode_title, episode_chapters=chapters)
-    
+        return jsonify(episode_title=episode_title, episode_chapters=chapters)
     ## Hourly Downloads ##
     # Initiate the hourly scheduler here
     downloadSchedule()

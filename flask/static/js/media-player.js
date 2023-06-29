@@ -2,6 +2,8 @@
 var currentSong = 0;
 var isPlaying = false;
 var playbackPosition = 0;
+var currentChapterIndex = 0;
+var pausedPosition = 0;
 var songList = document.getElementById('song-list');
 var urlParams = new URLSearchParams(window.location.search);
 var podcast = urlParams.get('podcast');
@@ -32,7 +34,6 @@ function episodePlayedDB(episode_title) {
     },
     body: jsonData
   });
-  console.log(episode_title + 'Added to DB');
 };
 
 if (podcast) {
@@ -86,7 +87,6 @@ function hidePlayed() {
   var song_elements = document.getElementsByClassName('song');
   for (var i = song_elements.length - 1; i >= 0; i--) {
     var played_element = song_elements[i].querySelector('.played');
-    console.log(played_element.textContent);
     if (played_element.textContent.includes("1")) {
       song_elements[i].remove();
     } else {
@@ -103,10 +103,12 @@ function nowPlaying() {
     };
     click_event.id = 'now-playing';
 }; 
-var player = new Howl({
+var player = new Howl({   
     src: [filteredSongs[currentSong].url],
     html5: true,
-    onload: function() {
+    onload: async function() {
+      playbackPosition = await getCurrentTimeDB()
+      episodeChapters = await getEpisodeChapters()
       mediaSessionUpdateMeta()
       updateMetadata();
     },
@@ -114,6 +116,10 @@ var player = new Howl({
       requestAnimationFrame(step);
       timeSpan();
     },
+    onpause: function() {
+      pausedPosition = player.seek();
+      updateChapter(pausedPosition);
+    }
 });
 
 function updateMetadata() {
@@ -156,18 +162,19 @@ async function playCurrentSong(playbackPosition) {
     player.stop(); // Stop the currently playing song
     player.unload(); // Unload the current song
     playbackPosition = await getCurrentTimeDB()
-    console.log("playbackPostion: " + playbackPosition)
+    episodeChapters = await getEpisodeChapters()
     player = new Howl({
   	src: [filteredSongs[currentSong].url],
 	    html5: true,
 	    onload: function() {
-        console.log("Onplay position: " + playbackPosition)
-        player.seek(playbackPosition);        updateMetadata();
+        player.seek(playbackPosition);        
+        updateMetadata();
         mediaSessionUpdateMeta()
         player.play()
       },
       onplay: function() {
         mediaSessionUpdateMeta()
+        updateChapter(playbackPosition)
         requestAnimationFrame(step)
         requestAnimationFrame(timeSpan)
         intervalId = setInterval(storeTime, 1000)
@@ -186,7 +193,6 @@ async function playCurrentSong(playbackPosition) {
 
 function pauseButton() {
     playbackPosition = player.seek();
-    console.log("playback position is", playbackPosition)
     player.pause();
 }
 
@@ -199,14 +205,12 @@ function skipForward() {
   playbackPosition = player.seek();
   forwardPosition = playbackPosition + 30;
   player.seek(forwardPosition);
-  console.log("Skipping From ", playbackPosition, " To ", forwardPosition);
 }
 
 function skipBackward() {
   playbackPosition = player.seek();
   backwardPosition = playbackPosition - 30;
   player.seek(backwardPosition);
-  console.log("Skipping From ", playbackPosition, " To ", backwardPosition);
 }
 
 function togglePlay() {
@@ -215,8 +219,13 @@ function togglePlay() {
       pausedPosition = player.seek();
       player.pause();
     } else {
-      player.seek(pausedPosition);
-      player.play();
+      if (pausedPosition > 0) {
+        player.seek(pausedPosition);
+        player.play()
+      } else {
+        player.seek(playbackPosition)
+        player.play()
+      }
     }
   }
 }
@@ -256,8 +265,8 @@ function seekBar(event) {
   var percentage = (offset / containerWidth) * 100;
   progress.style.width = percentage + '%';
   var skipSeconds = duration * ( percentage / 100 );
-  console.log(skipSeconds);
   player.seek(skipSeconds);
+  updateChapter(skipSeconds);
 }
 
 speedSelect.addEventListener('change', function() {
@@ -278,13 +287,11 @@ function timeSpan() {
 function storeTime() {
   var episode_title = filteredSongs[currentSong].name
   var currentTimeStore = player.seek()
-  console.log("Storetime Current Time Pre Post: " + currentTimeStore)
   var postData = {
     episode_title: episode_title,
     current_time: currentTimeStore 
   }
   var jsonData = JSON.stringify(postData);
-  console.log(jsonData)
   fetch('/current-time', {
     method: 'POST',
     headers: {
@@ -310,6 +317,58 @@ async function getCurrentTimeDB() {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+}
+async function getEpisodeChapters() {
+  var episode_title = filteredSongs[currentSong].name
+  var url = '/episode-metadata?query=chapters&episode-title=' + encodeURIComponent(episode_title);
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const chaptersJson = await response.json();
+    episodeChapters = chaptersJson['episode_chapters']
+    return episodeChapters 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+function nextChapterSkip() {
+  currentChapterIndex++
+  var chaptersLength = episodeChapters.length
+  if (currentChapterIndex >= chaptersLength) {
+    currentChapterIndex = chaptersLength - 1
+  }
+  var startTime = episodeChapters[currentChapterIndex]['startTime']
+  player.seek(startTime)
+  player.play()
+}
+
+function previousChapterSkip() {
+  currentChapterIndex--
+  if (currentChapterIndex < 0) {
+    currentChapterIndex = 0 
+  }
+  var startTime = episodeChapters[currentChapterIndex]['startTime']
+  player.seek(startTime)
+  player.play()
+}
+
+function updateChapter(skipSeconds) {
+  chaptersLength = episodeChapters.length
+  if (chaptersLength > 0) {
+    for (var i = 0; i < chaptersLength; i++) {
+      if (skipSeconds >= episodeChapters[i]['startTime']) {
+        currentChapterIndex = i;
+      } else {
+        break
+      }
+    }
   }
 }
 
