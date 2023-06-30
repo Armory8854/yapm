@@ -54,7 +54,7 @@ def dictCreation(entry, iteration):
         print(episode_link)
     episode_title = entry['title']
     episode_date = dateParser(entry['published'])
-    episode_description = htmlPrettyPrint(entry['description'])
+    episode_description = str(entry['description'])
     # Podcasts have chapters you know! but only sometimes :(
     try:
         episode_chapters_url = entry['podcast_chapters']['url']

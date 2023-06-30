@@ -13,6 +13,7 @@ var podcastDescription = document.getElementById('description-full-text')
 var progress = document.getElementById('progress-bar')
 var progressBarContainer = document.getElementById('progress-bar-container')
 var duration = 0;
+var episodeChapters = ""
 
 // Add event listeners here, mainly for seek bar
 progressBarContainer.addEventListener('click', seekBar);
@@ -112,7 +113,9 @@ var player = new Howl({
       mediaSessionUpdateMeta()
       updateMetadata();
       timeSpan();
-      updateChapter(playbackPosition)
+      if ( episodeChapters.length > 0) {
+        updateChapter(playbackPosition)
+      }
     },
     onplay: function() {
       requestAnimationFrame(step);

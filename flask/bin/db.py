@@ -197,9 +197,16 @@ def getChaptersDB(db_file, episode_title):
     command = "SELECT episode_chapters FROM episodes WHERE episode_title=?"
     cur.execute(command, (episode_title,))
     result = cur.fetchone()
-    print(result)
-    result = json.loads(result[0])
-    print(result)
+    print(result[0])
+    if result[0] == None:
+        result = json.loads(result[0])
+        print(result)
+    else:
+        result = [{
+            "title": "No Chapters",
+            "startTime": 0
+        }]
+        print(result)
     con.close()
     return result
 
