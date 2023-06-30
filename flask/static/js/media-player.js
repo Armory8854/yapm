@@ -110,17 +110,17 @@ var player = new Howl({
     onload: async function() {
       playbackPosition = await getCurrentTimeDB()
       episodeChapters = await getEpisodeChapters()
+      console.log(episodeChapters)
       mediaSessionUpdateMeta()
+      updateChapter(playbackPosition)
       updateMetadata();
       timeSpan();
-      if ( episodeChapters.length > 0) {
-        updateChapter(playbackPosition)
-      }
     },
     onplay: function() {
       requestAnimationFrame(step);
-      intervalId = setInterval(storeTime, 1000);
       requestAnimationFrame(chapterSpanFunction)
+      updateChapter(playbackPosition)
+      intervalId = setInterval(storeTime, 1000);
     },
     onpause: function() {
       pausedPosition = player.seek();
