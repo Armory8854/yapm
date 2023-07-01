@@ -135,7 +135,13 @@ body {
     background-color: #282828;
     border-color: lightgray;
     border-style: solid;
-    box-shadow: 0 5px 16px 0 rgb(255,255,255,0.2), 0 6px 20px 0 rgb(255,255,255,0.16)
+    box-shadow: 0 5px 16px 0 rgb(255,255,255,0.2), 0 6px 20px 0 rgb(255,255,255,0.16);
+    transition: 0.025s;
+    opacity: 1;
+}
+
+.button-style:active {
+    background-color: #525252
 }
 
 /* MEDIA PLAYER JS css */
