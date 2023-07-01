@@ -59,9 +59,12 @@ def dictCreation(entry, iteration):
     try:
         episode_chapters_url = entry['podcast_chapters']['url']
         episode_chapters_response = requests.get(episode_chapters_url)
-        episode_chapters_json = episode_chapters_response.json()['chapters']
-        episode_chapters = bytes(json.dumps(episode_chapters_json),'utf-8')
-        print(episode_chapters)
+        try:
+            episode_chapters_json = episode_chapters_response.json()['chapters']
+            episode_chapters = bytes(json.dumps(episode_chapters_json),'utf-8')
+        except:
+            print("JSON error for some reason")
+            episode_chapters = ""
     except KeyError as e:
         print(f"{episode_title} has no chapters, or an error occured")
         print(f"{e}")
