@@ -134,9 +134,11 @@ function updateMetadata() {
   var currentSongName = currentSongData.name;
   var currentSongImage = currentSongData.cover_art_url;
 
+  const parser = new DOMParser();
+  const episodeDescription = parser.parseFromString(currentSongData.description, 'text/html');
   document.getElementById('song-title').textContent = currentSongName;
   document.getElementById('song-image').src = currentSongImage;
-  podcastDescription.textContent = currentSongData.description;
+  podcastDescription.innerHTML = episodeDescription.body.innerText;
   return currentSongName, currentSongImage
 };
 
