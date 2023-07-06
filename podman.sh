@@ -1,5 +1,8 @@
 #!/bin/bash
 ## Env variable defaults
+old_ifs="$IFS"
+IFS="\n"
+
 ### YAPM
 YAPM_PORT=8000
 YAPM_DATA_PATH="$PWD"/flask/data
@@ -58,10 +61,12 @@ function stop-all() {
 function delete-all() {
     podman rm "localhost/yapm:latest" 
     podman rm "docker.io/binwiederhier/ntfy:v2.5.0" 
-    rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml} 
-    rm "$YAPM_PODCAST_PATH"/*/*.opus
-    rmdir "$YAPM_PODCASTPATH"/*
-    rm "$YAPM_IMAGE_PATH"/*.jpg
+#    rm "$YAPM_DATA_PATH"/{database.db,subscriptions.opml}
+#    for podcast in $(ls "$YAPM_PODCAST_PATH");
+#    do
+#        rm -r "$YAPM_PODCAST_PATH"/"${podcast}"
+#    done
+#    rm "$YAPM_IMAGE_PATH"/*.jpg
 }
 
 ## Dev Functions
@@ -111,3 +116,5 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
+
+IFS="$old_ifs"
