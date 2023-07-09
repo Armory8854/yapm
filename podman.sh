@@ -5,9 +5,9 @@ IFS="\n"
 
 ### YAPM
 YAPM_PORT=8000
-YAPM_DATA_PATH="$PWD"/flask/data
-YAPM_PODCAST_PATH="$PWD"/flask/static/podcasts
-YAPM_IMAGE_PATH="$PWD"/flask/static/image
+YAPM_DATA_PATH="$HOME"/podman/yapm/data
+YAPM_PODCAST_PATH="$HOME"/podman/yapm/static/podcasts
+YAPM_IMAGE_PATH="$HOME"/podman/yapm/static/image
 
 ### ntfy.sh
 NTFY_PORT=8001
