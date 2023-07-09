@@ -1,13 +1,9 @@
 #!/bin/bash
-## Env variable defaults
-old_ifs="$IFS"
-IFS="\n"
-
 ### YAPM
 YAPM_PORT=8000
 YAPM_DATA_PATH="$HOME"/podman/yapm/data
-YAPM_PODCAST_PATH="$HOME"/podman/yapm/static/podcasts
-YAPM_IMAGE_PATH="$HOME"/podman/yapm/static/image
+YAPM_PODCAST_PATH="$HOME"/podman/yapm/podcasts
+YAPM_IMAGE_PATH="$HOME"/podman/yapm/image
 
 ### ntfy.sh
 NTFY_PORT=8001
