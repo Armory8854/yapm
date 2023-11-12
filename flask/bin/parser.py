@@ -46,7 +46,10 @@ def urlPagination(url, max_downloads, page_number=1):
 
 def dictCreation(entry, iteration):
     print(entry)
-    episode_link = entry['links'][1]['href']
+    try:
+        episode_link = entry['links'][1]['href']
+    except:
+        episode_link = entry['links'][0]['href']
     print(episode_link)
     # This is to make sure we catch unconventional enclosures
     if "mp3" not in episode_link:
